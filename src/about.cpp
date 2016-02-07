@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot   *
- *   darknock@o2.pl   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                            *
+ *   darknock@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,15 +20,15 @@
 
 #include <about.h>
 
-AboutDarknock::AboutDarknock(QWidget * parent, Qt::WFlags f) {
+AboutQLShape::AboutQLShape(QWidget * parent, Qt::WindowFlags f) {
     ui.setupUi(this);
-    ui.label->setPixmap(QPixmap(QString::fromUtf8(":images/darknock.png")));
+    ui.label->setPixmap(QPixmap(QString::fromUtf8(":images/qlshape.png")));
     ui.pushButton->setIcon(QIcon(QString::fromUtf8(":images/fileclose.png")));
-    ui.label_2->setText("darknocK 0.3.0");
+    ui.label_2->setText("QLShape 0.4.0");
     ui.textBrowser_4->setHtml("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Copyright (C) 2007 by Konrad Ciekot</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Copyright (C) 2007 - 2016 by Konrad Ciekot</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This program is free software; you can redistribute it and/or modify</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">it under the terms of the GNU General Public License as published by</p>\n"

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,11 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QAction>
+#include "qlshape.h"
 #include "history.h"
-#include "darknock.h"
 
-History::History(darknock *d) : max(20) {
+#include <QAction>
+
+History::History(QLShape *d) : max(20) {
     parent = d;
     iter = end();
 }

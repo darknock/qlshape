@@ -40,7 +40,7 @@
     <string/>
    </property>
    <property name="pixmap" >
-    <pixmap resource="application.qrc" >:/../images/darknock.png</pixmap>
+    <pixmap resource="application.qrc" >:/../images/qlshape.png</pixmap>
    </property>
   </widget>
   <widget class="QTabWidget" name="tabWidget" >
@@ -152,7 +152,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">	&lt;/p>
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">updates: &lt;a href="http://www.sourceforge.net/projects/darknock">&lt;span style=" text-decoration: underline; color:#0000ff;">http://www.sf.net/projects/darknock&lt;/span>&lt;/a>&lt;/p>
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">	Copyright (C) 2007 by Konrad Ciekot&lt;/p>&lt;/body>&lt;/html></string>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">	Copyright (C) 2007 - 2016 by Konrad Ciekot&lt;/p>&lt;/body>&lt;/html></string>
      </property>
      <property name="acceptRichText" >
       <bool>true</bool>

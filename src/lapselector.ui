@@ -289,9 +289,6 @@
    <property name="textFormat" >
     <enum>Qt::AutoText</enum>
    </property>
-   <property name="pixmap" >
-    <pixmap/>
-   </property>
    <property name="scaledContents" >
     <bool>false</bool>
    </property>

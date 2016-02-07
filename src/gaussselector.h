@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 #ifndef GAUSSSELECTOR_H
 #define GAUSSSELECTOR_H
 
-#include "../ui_gaussselector.h"
+#include "ui_gaussselector.h"
 
 using namespace Ui;
 
@@ -29,7 +29,7 @@ class GaussSelector:public QDialog {
     Q_OBJECT
 
 public:
-    GaussSelector(QWidget * parent = 0, Qt::WFlags f = 0 );
+    GaussSelector(QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~GaussSelector() {}
     double radius() const { return ui.doubleSpinBox1->value(); }
     void setPreview(QImage* prev);

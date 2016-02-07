@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot   *
- *   darknock@o2.pl   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                            *
+ *   darknock@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,10 @@
 #include "edgeselector.h"
 #include "effects.h"
 
-EdgeSelector::EdgeSelector(QWidget * parent, Qt::WFlags f) {
+EdgeSelector::EdgeSelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
     ui.setupUi(this);
 
     ui.comboBox->addItem("Sobel (compass)");
@@ -42,7 +45,8 @@ EdgeSelector::EdgeSelector(QWidget * parent, Qt::WFlags f) {
     connect(ui.previewLabel, SIGNAL(dragingFinished()), this, SLOT(updateEdge()));
 }
 
-void EdgeSelector::updateEdge() {
+void EdgeSelector::updateEdge()
+{
     if (ui.checkBox->checkState() == Qt::Checked) {
         QImage *edgy = edges(ui.previewLabel->preview(), filter(), thold(), blur(), negative(), binary());
         ui.previewLabel->setPixmap(QPixmap::fromImage(*edgy));
@@ -50,13 +54,15 @@ void EdgeSelector::updateEdge() {
     }
 }
 
-void EdgeSelector::checkChange() {
+void EdgeSelector::checkChange()
+{
     if (ui.checkBox->checkState() != Qt::Checked) {
         ui.previewLabel->refresh();
     } else updateEdge();
 }
 
-void EdgeSelector::setPreview(QImage* prev) {
+void EdgeSelector::setPreview(QImage* prev)
+{
     ui.previewLabel->setPreview(prev);
     updateEdge();
 }

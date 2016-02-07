@@ -1,3 +1,7 @@
+qlshape (0.4.0)
+  * upgrade Qt version to Qt5
+  * renamed program to qlshape
+
 darknock (0.3.0) stable
   * added Artificial Intelligence edge detection algorithm
     + uses Hamming's recurent network

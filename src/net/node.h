@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot   *
- *   darknock@o2.pl   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                            *
+ *   darknock@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

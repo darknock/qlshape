@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 #ifndef LAPSELECTOR_H
 #define LAPSELECTOR_H
 
-#include "../ui_lapselector.h"
+#include "ui_lapselector.h"
 
 using namespace Ui;
 
@@ -29,7 +29,7 @@ class LapSelector:public QDialog {
     Q_OBJECT
 
 public:
-    LapSelector(QWidget * parent = 0, Qt::WFlags f = 0 );
+    LapSelector(QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~LapSelector() {}
     int mask() const { return ui.radioButton4->isChecked() ? 4 : 8; }
     bool negative() const { return (ui.checkBoxNeg->checkState() == Qt::Checked); }

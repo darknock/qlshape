@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 #ifndef EDGESELECTOR_H
 #define EDGESELECTOR_H
 
-#include "../ui_edgeselector.h"
+#include "ui_edgeselector.h"
 
 using namespace Ui;
 
@@ -29,7 +29,7 @@ class EdgeSelector:public QDialog {
     Q_OBJECT
 
 public:
-    EdgeSelector(QWidget * parent = 0, Qt::WFlags f = 0 );
+    EdgeSelector(QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~EdgeSelector() {}
     bool negative() const { return (ui.checkBoxNeg->checkState() == Qt::Checked); }
     bool binary() const { return (ui.checkBoxBin->checkState() == Qt::Checked); }

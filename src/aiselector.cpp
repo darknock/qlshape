@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,17 +23,17 @@
 #include "net/hamming.h"
 #include "net/pattern.h"
 
-AiSelector::AiSelector(QWidget * parent, Qt::WFlags f) {
+AiSelector::AiSelector(QWidget * parent, Qt::WindowFlags f) {
     ui.setupUi(this);
-#ifdef Q_WS_X11
+#ifdef Q_OS_X11
     darknocksBrain::PatternSet pSet("/usr/share/darknock/data/input");
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     darknocksBrain::PatternSet pSet("/usr/share/darknock/data/input");
 #endif
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     darknocksBrain::PatternSet pSet("data/input");
 #endif
 

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot   *
- *   darknock@o2.pl   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                            *
+ *   darknock@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,10 @@
 #include "dogselector.h"
 #include "effects.h"
 
-DogSelector::DogSelector(QWidget * parent, Qt::WFlags f) {
+DogSelector::DogSelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
     ui.setupUi(this);
 
     connect(ui.doubleSpinBox1, SIGNAL(valueChanged(double)), this, SLOT(updateDog()));
@@ -32,7 +35,8 @@ DogSelector::DogSelector(QWidget * parent, Qt::WFlags f) {
     connect(ui.previewLabel, SIGNAL(dragingFinished()), this, SLOT(updateDog()));
 }
 
-void DogSelector::updateDog() {
+void DogSelector::updateDog()
+{
     if (ui.checkBox->checkState() == Qt::Checked) {
         QImage *diffy = diffOfGaussian(ui.previewLabel->preview(), radius1(), radius2(), negative(), normalize());
         ui.previewLabel->setPixmap(QPixmap::fromImage(*diffy));
@@ -40,13 +44,15 @@ void DogSelector::updateDog() {
     }
 }
 
-void DogSelector::checkChange() {
+void DogSelector::checkChange()
+{
     if (ui.checkBox->checkState() != Qt::Checked) {
         ui.previewLabel->refresh();
     } else updateDog();
 }
 
-void DogSelector::setPreview(QImage* prev) {
+void DogSelector::setPreview(QImage* prev)
+{
     ui.previewLabel->setPreview(prev);
     updateDog();
 }

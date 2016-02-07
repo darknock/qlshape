@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,11 +24,12 @@
 #include <QList>
 #include <QImage>
 
-class darknock;
+class QLShape;
 
-class History:private QList<QImage> {
+class History : private QList<QImage>
+{
     public:
-        History(darknock *d);
+        History(QLShape *d);
         ~History() { clear(); }
         void reset(QImage i);
         void undo();
@@ -42,7 +43,7 @@ class History:private QList<QImage> {
         QList<QString> dscr;
         QList<QString>::iterator iterDscr;
         QList<QImage>::iterator iter;
-        darknock *parent;
+        QLShape *parent;
         const int max;
 };
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 #ifndef ZEROSELECTOR_H
 #define ZEROSELECTOR_H
 
-#include "../ui_zeroselector.h"
+#include "ui_zeroselector.h"
 
 using namespace Ui;
 
@@ -29,7 +29,7 @@ class ZeroSelector:public QDialog {
     Q_OBJECT
 
 public:
-    ZeroSelector(QWidget * parent = 0, Qt::WFlags f = 0 );
+    ZeroSelector(QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~ZeroSelector() {}
     bool blur() { return (ui.checkBoxBlur->checkState() == Qt::Checked); }
     int thold() { return (ui.horizontalSlider->value()); }

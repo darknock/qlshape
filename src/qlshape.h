@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -38,14 +38,14 @@ class EdgeSelector;
 class ZeroSelector;
 class CannySelector;
 class AiSelector;
-class AboutDarknock;
+class AboutQLShape;
 
-class darknock:public QMainWindow {
+class QLShape : public QMainWindow {
     Q_OBJECT
 
 public:
-    darknock();
-    ~darknock();
+    QLShape();
+    ~QLShape();
     void preOpen(QString fileName);
 
 protected:
@@ -101,7 +101,7 @@ private:
     CannySelector *cannySelector;
     GaussSelector *gaussSelector;
     AiSelector *aiSelector;
-    AboutDarknock *aboutDarknock;
+    AboutQLShape *aboutQLShape;
 
     //History
     friend class History;

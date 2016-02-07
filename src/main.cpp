@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,31 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "qlshape.h"
 
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
 #include <QSettings>
-#include "darknock.h"
 
 int main(int argc, char *argv[])
 {
       Q_INIT_RESOURCE(application);
       QApplication app(argc, argv);
 
-      #ifdef Q_WS_X11
+      #ifdef Q_OS_X11
         QString locale = QLocale::system().name();
-        QString lang_file = QString("/usr/share/darknock/locale/darknock_") + locale;
+        QString lang_file = QString("/usr/share/darknock/locale/qlshape_") + locale;
       #endif
 
-      #ifdef Q_WS_MAC
-        //I don't have a Mac (yet) so I don't know where to store program data
+      #ifdef Q_OS_MAC
+        // use Library folder instead
         QString locale = QLocale::system().name();
-        QString lang_file = QString("/usr/share/darknock/locale/darknock_") + locale;
+        QString lang_file = QString("/usr/share/darknock/locale/qlshape_") + locale;
       #endif
 
-      #ifdef Q_WS_WIN
-        QSettings settings("darknock", "darknocK");
+      #ifdef Q_OS_WIN
+        QSettings settings("darknock", "qlshape");
         int code = settings.value("Installer Language", 1033).toInt();
         QString locale;
         switch(code) {
@@ -54,14 +54,14 @@ int main(int argc, char *argv[])
             case 1053: locale = "sv"; break;
             case 1055: locale = "tr"; break;
         }
-        QString lang_file = QString("locale/darknock_") + locale;
+        QString lang_file = QString("locale/qlshape_") + locale;
       #endif
 
       QTranslator translator;
       translator.load(lang_file);
       app.installTranslator(&translator);
 
-      darknock * mw = new darknock();
+      QLShape * mw = new QLShape();
       mw->show();
       if(argc == 2) mw->preOpen(argv[1]);
       return app.exec();

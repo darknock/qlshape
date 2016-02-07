@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot   *
- *   darknock@o2.pl   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                            *
+ *   darknock@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,10 @@
 #include "lapselector.h"
 #include "effects.h"
 
-LapSelector::LapSelector(QWidget * parent, Qt::WFlags f) {
+LapSelector::LapSelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
     ui.setupUi(this);
 
     connect(ui.radioButton4, SIGNAL(clicked(bool)), this, SLOT(updateLap()));
@@ -33,7 +36,8 @@ LapSelector::LapSelector(QWidget * parent, Qt::WFlags f) {
     connect(ui.previewLabel, SIGNAL(dragingFinished()), this, SLOT(updateLap()));
 }
 
-void LapSelector::updateLap() {
+void LapSelector::updateLap()
+{
     if (ui.checkBox->checkState() == Qt::Checked) {
         QImage *lapy = laplace(ui.previewLabel->preview(), mask(), blur(), negative(), normalize());
         ui.previewLabel->setPixmap(QPixmap::fromImage(*lapy));
@@ -41,13 +45,17 @@ void LapSelector::updateLap() {
     }
 }
 
-void LapSelector::checkChange() {
+void LapSelector::checkChange()
+{
     if (ui.checkBox->checkState() != Qt::Checked) {
         ui.previewLabel->refresh();
-    } else updateLap();
+    } else {
+        updateLap();
+    }
 }
 
-void LapSelector::setPreview(QImage* prev) {
+void LapSelector::setPreview(QImage* prev)
+{
     ui.previewLabel->setPreview(prev);
     updateLap();
 }

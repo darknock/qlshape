@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,9 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QtGui>
-
-#include "darknock.h"
+#include "qlshape.h"
 #include "history.h"
 #include "effects.h"
 #include "filterselector.h"
@@ -34,8 +32,23 @@
 #include "about.h"
 #include "aieffects.h"
 
-darknock::darknock() {
-    setWindowIcon(QIcon(":/images/darknock.png"));
+#include <QScrollArea>
+#include <QTime>
+#include <QStatusBar>
+#include <QFileInfo>
+#include <QCloseEvent>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPrintDialog>
+#include <QPainter>
+#include <QScrollBar>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QSettings>
+
+QLShape::QLShape()
+{
+    setWindowIcon(QIcon(":/images/qlshape.png"));
 
     curImage = new QImage();
 
@@ -48,7 +61,7 @@ darknock::darknock() {
     zeroSelector = new ZeroSelector(this);
     cannySelector = new CannySelector(this);
     aiSelector = new AiSelector(this);
-    aboutDarknock = new AboutDarknock(this);
+    aboutQLShape = new AboutQLShape(this);
 
     imageLabel = new QLabel;
     imageLabel->setBackgroundRole(QPalette::Dark);
@@ -73,7 +86,7 @@ darknock::darknock() {
 }
 
 /**************************** Effects *****************************/
-void darknock::enableEffects() {
+void QLShape::enableEffects() {
     bool null = curImage->isNull();
     bool binary = isBinary(curImage);
     toGrayscaleAct->setEnabled(!curImage->isGrayscale());
@@ -92,69 +105,69 @@ void darknock::enableEffects() {
     aiEdgesAct->setEnabled(!null);
 }
 
-void darknock::toGrayscale() {
+void QLShape::toGrayscale() {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
-    QImage* newImage;
+    QImage *newImage;
     newImage = toGray(curImage);
     updateImage(newImage, tr("converting to grayscale"));
     statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
     QApplication::restoreOverrideCursor();
 }
 
-void darknock::toMonochromatic() {
+void QLShape::toMonochromatic() {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
-    QImage* newImage;
+    QImage *newImage;
     newImage = toMono(curImage);
     updateImage(newImage, tr("converting to monochromatic"));
     statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
     QApplication::restoreOverrideCursor();
 }
 
-void darknock::negative() {
+void QLShape::negative() {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
-    QImage* newImage;
+    QImage *newImage;
     newImage = negate(curImage);
     updateImage(newImage, tr("changing image to negative"));
     statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
     QApplication::restoreOverrideCursor();
 }
 
-void darknock::normalize() {
+void QLShape::normalize() {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
-    QImage* newImage;
+    QImage *newImage;
     newImage = normalized(curImage);
     updateImage(newImage, tr("incresing contrast of the image"));
     statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
     QApplication::restoreOverrideCursor();
 }
 
-void darknock::filterSelect() {
+void QLShape::filterSelect() {
     if (filterSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage = filter(curImage, filterSelector->mask(),  filterSelector->rows(), filterSelector->cols());
+        QImage *newImage = filter(curImage, filterSelector->mask(),  filterSelector->rows(), filterSelector->cols());
         updateImage(newImage, tr("applying %1 filter").arg(filterSelector->filter()));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
         QApplication::restoreOverrideCursor();
     }
 }
 
-void darknock::filterGauss() {
+void QLShape::filterGauss() {
     gaussSelector->setPreview(curImage);
     if (gaussSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage;
+        QImage *newImage;
         newImage = gaussianBlur(curImage, gaussSelector->radius());
         updateImage(newImage, tr("applying gaussian filter"));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
@@ -162,26 +175,26 @@ void darknock::filterGauss() {
     }
 }
 
-void darknock::filterEdges() {
+void QLShape::filterEdges() {
     edgeSelector->setPreview(curImage);
     if (edgeSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage = edges(curImage, edgeSelector->filter(), edgeSelector->thold(), edgeSelector->blur(), edgeSelector->negative(), edgeSelector->binary());
+        QImage *newImage = edges(curImage, edgeSelector->filter(), edgeSelector->thold(), edgeSelector->blur(), edgeSelector->negative(), edgeSelector->binary());
         updateImage(newImage, tr("applying %1 filter").arg(edgeSelector->filter()));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
         QApplication::restoreOverrideCursor();
     }
 }
 
-void darknock::filterLaplace() {
+void QLShape::filterLaplace() {
     lapSelector->setPreview(curImage);
     if (lapSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage;
+        QImage *newImage;
         newImage = laplace(curImage, lapSelector->mask(), lapSelector->blur(), lapSelector->negative(), lapSelector->normalize());
         updateImage(newImage, tr("detecting edges using Laplace filter"));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
@@ -189,13 +202,13 @@ void darknock::filterLaplace() {
     }
 }
 
-void darknock::filterDog() {
+void QLShape::filterDog() {
     dogSelector->setPreview(curImage);
     if (dogSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage;
+        QImage *newImage;
         newImage = diffOfGaussian(curImage, dogSelector->radius1(), dogSelector->radius2(), dogSelector->negative(), dogSelector->normalize());
         updateImage(newImage, tr("detecting edges using Difference of Gauss operator"));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
@@ -203,13 +216,13 @@ void darknock::filterDog() {
     }
 }
 
-void darknock::filterZero() {
+void QLShape::filterZero() {
     zeroSelector->setPreview(curImage);
     if (zeroSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage;
+        QImage *newImage;
         newImage = zeroCrossing(curImage, zeroSelector->blur(), zeroSelector->thold());
         updateImage(newImage, tr("detecting edges using zero-crossing operator"));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
@@ -217,13 +230,13 @@ void darknock::filterZero() {
     }
 }
 
-void darknock::filterCanny() {
+void QLShape::filterCanny() {
     cannySelector->setPreview(curImage);
     if (cannySelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage;
+        QImage *newImage;
         newImage = canny(curImage, cannySelector->tholdHi(), cannySelector->tholdLow(), cannySelector->blur());
         updateImage(newImage, tr("detecting edges using Canny's operator"));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
@@ -231,13 +244,13 @@ void darknock::filterCanny() {
     }
 }
 
-void darknock::aiEdges() {
+void QLShape::aiEdges() {
     aiSelector->setPreview(curImage);
     if (aiSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
         t.start();
-        QImage* newImage;
+        QImage *newImage;
         newImage = hammingAiEdges(curImage, aiSelector->input(), aiSelector->xMin(), aiSelector->xMax(), aiSelector->hammingNet(), aiSelector->thold(), aiSelector->blur());
         updateImage(newImage, tr("detecting edges using Hamming's artificial neural network"));
         statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
@@ -246,22 +259,22 @@ void darknock::aiEdges() {
 }
 
 
-void darknock::fillLines() {
+void QLShape::fillLines() {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
-    QImage* newImage;
+    QImage *newImage;
     newImage = completeLines(curImage);
     updateImage(newImage, tr("lines filling"));
     statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
     QApplication::restoreOverrideCursor();
 }
 
-void darknock::thinLines() {
+void QLShape::thinLines() {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
-    QImage* newImage;
+    QImage *newImage;
     newImage = thinnerLines(curImage);
     updateImage(newImage, tr("lines thinning"));
     statusBar()->showMessage(tr("Done in %1 seconds").arg(t.elapsed()/1000.0), 3000);
@@ -269,7 +282,7 @@ void darknock::thinLines() {
 }
 
 /**************************** History *****************************/
-void darknock::setCurrentImage(QImage* i) {
+void QLShape::setCurrentImage(QImage *i) {
     if(curImage != i) delete curImage;
     curImage = i;
     imageLabel->setPixmap(QPixmap::fromImage(*curImage));
@@ -279,7 +292,7 @@ void darknock::setCurrentImage(QImage* i) {
     fitToWindow();
 }
 
-void darknock::updateImage(QImage* i, QString dscr) {
+void QLShape::updateImage(QImage *i, QString dscr) {
     setCurrentImage(i);
     undoAct->setEnabled(true);
     redoAct->setEnabled(false);
@@ -289,7 +302,7 @@ void darknock::updateImage(QImage* i, QString dscr) {
     documentWasModified();
 }
 
-void darknock::undo() {
+void QLShape::undo() {
     history->undo();
     undoAct->setEnabled(history->hasPrevious());
     redoAct->setEnabled(true);
@@ -307,7 +320,7 @@ void darknock::undo() {
     documentWasModified();
 }
 
-void darknock::redo() {
+void QLShape::redo() {
     history->redo();
     redoAct->setEnabled(history->hasNext());
     undoAct->setEnabled(true);
@@ -326,7 +339,7 @@ void darknock::redo() {
 }
 
 /***************************** Files ******************************/
-void darknock::setCurrentFile(const QString &fileName) {
+void QLShape::setCurrentFile(const QString &fileName) {
     curFile = fileName;
     setWindowModified(false);
 
@@ -339,11 +352,11 @@ void darknock::setCurrentFile(const QString &fileName) {
     setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("darknocK")));
 }
 
-QString darknock::strippedName(const QString &fullFileName) {
+QString QLShape::strippedName(const QString &fullFileName) {
     return QFileInfo(fullFileName).fileName();
 }
 
-void darknock::closeEvent(QCloseEvent *event) {
+void QLShape::closeEvent(QCloseEvent *event) {
     if (maybeSave()) {
         writeSettings();
         filterSelector->saveData();
@@ -353,9 +366,9 @@ void darknock::closeEvent(QCloseEvent *event) {
     }
 }
 
-void darknock::open() {
+void QLShape::open() {
     if (maybeSave()) {
-        QImage* tempImage = curImage;
+        QImage *tempImage = curImage;
         QString fileName = QFileDialog::getOpenFileName(this,
                            tr("Open File"), curDirPath,   tr("Images (*.png *.xpm *.jpg *.bmp);;All files (*.*)"));
         if (!fileName.isEmpty()) {
@@ -389,7 +402,7 @@ void darknock::open() {
     }
 }
 
-void darknock::preOpen(QString fileName) {
+void QLShape::preOpen(QString fileName) {
     if (!fileName.isEmpty()) {
         curImage = new QImage(fileName);
         if (curImage->isNull()) {
@@ -418,7 +431,7 @@ void darknock::preOpen(QString fileName) {
     }
 }
 
-bool darknock::save() {
+bool QLShape::save() {
     if (curFile.isEmpty()) {
         return saveAs();
     } else {
@@ -426,7 +439,7 @@ bool darknock::save() {
     }
 }
 
-bool darknock::saveAs() {
+bool QLShape::saveAs() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                        curFile, tr("Portable Networks Graphics (*.png);;XPixMap (*.xpm);;JPEG (*.jpg);;Windows Bitmap (*.bmp)"));
     if (fileName.isEmpty())
@@ -435,7 +448,7 @@ bool darknock::saveAs() {
     return saveFile(fileName);
 }
 
-bool darknock::maybeSave() {
+bool QLShape::maybeSave() {
     if (isWindowModified()) {
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("darknocK"),
@@ -450,7 +463,7 @@ bool darknock::maybeSave() {
     return true;
 }
 
-bool darknock::saveFile(const QString &fileName) {
+bool QLShape::saveFile(const QString &fileName) {
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("darknocK"),
@@ -462,7 +475,10 @@ bool darknock::saveFile(const QString &fileName) {
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QImage saveImage(*curImage);
-    if (saveImage.isGrayscale()) saveImage.convertToFormat(curImageFormat);
+    // TODO: check why do we need this
+    if (saveImage.isGrayscale()) {
+        saveImage.convertToFormat(curImageFormat);
+    }
     saveImage.save(fileName);
     saveAct->setEnabled(false);
     QApplication::restoreOverrideCursor();
@@ -472,7 +488,7 @@ bool darknock::saveFile(const QString &fileName) {
     return true;
 }
 
-void darknock::print() {
+void QLShape::print() {
     Q_ASSERT(imageLabel->pixmap());
     QPrintDialog dialog(&printer, this);
     if (dialog.exec()) {
@@ -486,14 +502,14 @@ void darknock::print() {
     }
 }
 
-void darknock::documentWasModified() {
+void QLShape::documentWasModified() {
     setWindowModified(true);
     saveAct->setEnabled(true);
     enableEffects();
 }
 
 /*************************** Resizeing ****************************/
-void darknock::updateActions() {
+void QLShape::updateActions() {
     if (!curImage->isNull()) {
         zoomInAct->setEnabled(!fitToWindowAct->isChecked() && scaleFactor < 3.0);
         zoomOutAct->setEnabled(!fitToWindowAct->isChecked() && scaleFactor > 0.333);
@@ -501,7 +517,7 @@ void darknock::updateActions() {
     }
 }
 
-void darknock::scaleImage(double factor) {
+void QLShape::scaleImage(double factor) {
     Q_ASSERT(imageLabel->pixmap());
     scaleFactor *= factor;
     imageLabel->setVisible(false);
@@ -516,12 +532,12 @@ void darknock::scaleImage(double factor) {
     zoomOutAct->setEnabled(scaleFactor > 0.333);
 }
 
-void darknock::adjustScrollBar(QScrollBar *scrollBar, double factor) {
+void QLShape::adjustScrollBar(QScrollBar *scrollBar, double factor) {
     scrollBar->setValue(int(factor * scrollBar->value()
                             + ((factor - 1) * scrollBar->pageStep()/2)));
 }
 
-void darknock::fitSize() {
+void QLShape::fitSize() {
     int w = scrollArea->width()<curImage->width() ? scrollArea->width() : curImage->width();
     int h = scrollArea->height()<curImage->height() ? scrollArea->height() : curImage->height();
 
@@ -531,15 +547,15 @@ void darknock::fitSize() {
     zoomLabel->setText(tr("Zoom: %1%").arg(zoom));
 }
 
-void darknock::zoomIn() {
+void QLShape::zoomIn() {
     if (!curImage->isNull() && !fitToWindowAct->isChecked()) scaleImage(1.25);
 }
 
-void darknock::zoomOut() {
+void QLShape::zoomOut() {
     if (!curImage->isNull() && !fitToWindowAct->isChecked()) scaleImage(0.8);
 }
 
-void darknock::normalSize() {
+void QLShape::normalSize() {
     imageLabel->setPixmap(QPixmap::fromImage(*curImage));
     imageLabel->adjustSize();
 
@@ -550,17 +566,17 @@ void darknock::normalSize() {
     zoomOutAct->setEnabled(true);
 }
 
-void darknock::previousSize() {
+void QLShape::previousSize() {
     imageLabel->setPixmap(QPixmap::fromImage(*curImage));
     scaleImage(1.0);
 }
 
 
-void darknock::fitToWindow() {
+void QLShape::fitToWindow() {
     int isFitToWindow = fitToWindowAct->isChecked();
     scrollArea->setWidgetResizable(isFitToWindow);
 
-    if (!curImage->isNull())
+    if (!curImage->isNull()) {
         if (!isFitToWindow) {
             imageLabel->setScaledContents(true);
             imageLabel->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
@@ -572,17 +588,18 @@ void darknock::fitToWindow() {
             fitSize();
             imageLabel->setVisible(true);
         }
+    }
 
     updateActions();
 }
 
-void darknock::resizeEvent(QResizeEvent * event) {
+void QLShape::resizeEvent(QResizeEvent * event) {
     if (fitToWindowAct->isChecked() && !curImage->isNull()) fitSize();
     event->accept();
 }
 
 /************************ Interface setup *************************/
-void darknock::createActions() {
+void QLShape::createActions() {
     openAct = new QAction(QIcon(":/images/fileopen.png"), tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O", "Open"));
     openAct->setStatusTip(tr("Open an existing file"));
@@ -726,7 +743,7 @@ void darknock::createActions() {
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
-void darknock::createMenus() {
+void QLShape::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
@@ -775,7 +792,7 @@ void darknock::createMenus() {
     helpMenu->addAction(aboutQtAct);
 }
 
-void darknock::createToolBars() {
+void QLShape::createToolBars() {
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);
@@ -794,7 +811,7 @@ void darknock::createToolBars() {
     viewToolBar->addAction(fitToWindowAct);
 }
 
-void darknock::createStatusBar() {
+void QLShape::createStatusBar() {
     statusBar()->showMessage(tr("Ready"));
     zoomLabel = new QLabel();
     zoomLabel->setText(tr("Zoom: 100%"));
@@ -802,7 +819,7 @@ void darknock::createStatusBar() {
 }
 
 //Settings
-void darknock::readSettings() {
+void QLShape::readSettings() {
     QSettings settings("darknock", "darknocK");
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
@@ -811,7 +828,7 @@ void darknock::readSettings() {
     move(pos);
 }
 
-void darknock::writeSettings() {
+void QLShape::writeSettings() {
     QSettings settings("darknock", "darknocK");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
@@ -819,18 +836,18 @@ void darknock::writeSettings() {
     settings.setValue("dir", curDirPath);
 }
 
-void darknock::showEvent(QShowEvent * event) {
+void QLShape::showEvent(QShowEvent * event) {
     QSettings settings("darknock", "darknocK");
     bool fitted = settings.value("fitted", false).toBool();
     fitToWindowAct->setChecked(fitted);
     event->accept();
 }
 
-void darknock::about() {
-    aboutDarknock->exec();
+void QLShape::about() {
+    aboutQLShape->exec();
 }
 
-darknock::~darknock() {
+QLShape::~QLShape() {
     delete curImage;
     delete history;
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,13 +19,16 @@
  ***************************************************************************/
 
 #include "filterselector.h"
+
 #include <QDir>
 #include <QFile>
 #include <QLineEdit>
 #include <QMessageBox>
 
-FilterSelector::FilterSelector(QWidget * parent, Qt::WFlags f) {
-
+FilterSelector::FilterSelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
     ui.setupUi(this);
     fixSize();
 
@@ -59,21 +62,24 @@ FilterSelector::FilterSelector(QWidget * parent, Qt::WFlags f) {
     selectFilter(0);
 }
 
-void FilterSelector::saveData() {
+void FilterSelector::saveData()
+{
     QFile file(dataFile);
     if (!file.open(QFile::WriteOnly)) {
-        QMessageBox::information(this, tr("darknocK"), tr("Failed to open/create file %1: %2").arg(file.fileName()).arg(file.errorString()));
+        QMessageBox::information(this, tr("QLShape"), tr("Failed to open/create file %1: %2").arg(file.fileName()).arg(file.errorString()));
         return;
     }
     QDataStream out(&file);
     out << customFilters << customFiltersData;
 }
 
-void FilterSelector::finishEditing() {
+void FilterSelector::finishEditing()
+{
     editDialog->accept();
 }
 
-void FilterSelector::saveButtonClick() {
+void FilterSelector::saveButtonClick()
+{
     lineEdit->setText(tr("custom%1").arg(ui.comboBox->count() + 1));
     lineEdit->selectAll();
     if(editDialog->exec()) {
@@ -89,7 +95,8 @@ void FilterSelector::saveButtonClick() {
     }
 }
 
-void FilterSelector::delButtonClick() {
+void FilterSelector::delButtonClick()
+{
     QMessageBox::StandardButton ret;
     ret = QMessageBox::warning(this, tr("darknocK"),
                                tr("Do You really want to delete \"%1\" mask?").arg(ui.comboBox->currentText()),
@@ -103,7 +110,8 @@ void FilterSelector::delButtonClick() {
     }
 }
 
-void FilterSelector::setMask(int *f, int rowCount, int columnCount) {
+void FilterSelector::setMask(int *f, int rowCount, int columnCount)
+{
     QTableWidgetItem *item;
     ui.tableWidget->setRowCount(rowCount);
     ui.tableWidget->setColumnCount(columnCount);
@@ -115,7 +123,8 @@ void FilterSelector::setMask(int *f, int rowCount, int columnCount) {
    fixSize();
 }
 
-void FilterSelector::selectFilter(int i) {
+void FilterSelector::selectFilter(int i)
+{
     switch(i) {
         case 0: {   //Mean-removal
             int mr[] = {
@@ -185,7 +194,8 @@ void FilterSelector::selectFilter(int i) {
     check();
 }
 
-void FilterSelector::selectCustomFilter(int i) {
+void FilterSelector::selectCustomFilter(int i)
+{
     QVector<qint32> temp = customFiltersData[i];
     int rowCount, columnCount;
     rowCount = temp[0];
@@ -195,7 +205,8 @@ void FilterSelector::selectCustomFilter(int i) {
     setMask(temp.data(), rowCount, columnCount);
 }
 
-double* FilterSelector::mask() {
+double* FilterSelector::mask()
+{
     double *f = new double[ui.tableWidget->columnCount() * ui.tableWidget->rowCount()];
     for (int j = 0; j < ui.tableWidget->rowCount(); j++)
         for (int i = 0; i < ui.tableWidget->columnCount(); i++) {
@@ -204,7 +215,8 @@ double* FilterSelector::mask() {
     return f;
 }
 
-void FilterSelector::customClicked(bool checked) {
+void FilterSelector::customClicked(bool checked)
+{
     if(!checked) {
         disconnect(ui.comboBox, SIGNAL(activated(int)), this, SLOT(selectCustomFilter(int)));
         connect(ui.comboBox, SIGNAL(activated(int)), this, SLOT(selectFilter(int)));
@@ -226,7 +238,8 @@ void FilterSelector::customClicked(bool checked) {
     check();
 }
 
-void FilterSelector::setRows(int rows) {
+void FilterSelector::setRows(int rows)
+{
     ui.tableWidget->setRowCount(rows);
     if(ui.checkBox_2->checkState() == Qt::Checked) {
         ui.tableWidget->setColumnCount(rows);
@@ -236,7 +249,8 @@ void FilterSelector::setRows(int rows) {
     check();
 }
 
-void FilterSelector::setCols(int cols) {
+void FilterSelector::setCols(int cols)
+{
     ui.tableWidget->setColumnCount(cols);
     if(ui.checkBox_2->checkState() == Qt::Checked) {
         ui.tableWidget->setRowCount(cols);
@@ -246,7 +260,8 @@ void FilterSelector::setCols(int cols) {
     check();
 }
 
-void FilterSelector::check() {
+void FilterSelector::check()
+{
     bool ok;
     for (int j = 0; j < ui.tableWidget->rowCount(); j++)
         for (int i = 0; i < ui.tableWidget->columnCount(); i++) {
@@ -266,7 +281,8 @@ void FilterSelector::check() {
     if(ui.checkBox->checkState() == Qt::Checked) ui.saveButton->setEnabled(true);
 }
 
-void FilterSelector::fixSize() {
+void FilterSelector::fixSize()
+{
     const int size = 30;
     QTableWidgetItem *item;
     for (int i = 0; i < ui.tableWidget->rowCount(); i++) {

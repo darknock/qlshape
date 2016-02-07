@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot   *
- *   darknock@o2.pl   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                            *
+ *   darknock@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,7 @@
 #include "gaussselector.h"
 #include "effects.h"
 
-GaussSelector::GaussSelector(QWidget * parent, Qt::WFlags f) {
+GaussSelector::GaussSelector(QWidget * parent, Qt::WindowFlags f) {
     ui.setupUi(this);
 
     connect(ui.doubleSpinBox1, SIGNAL(valueChanged(double)), this, SLOT(updateGauss()));

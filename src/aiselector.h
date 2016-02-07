@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 #ifndef AISELECTOR_H
 #define AISELECTOR_H
 
-#include "../ui_aiselector.h"
+#include "ui_aiselector.h"
 #include <vector>
 
 namespace darknocksBrain {
@@ -34,7 +34,7 @@ class AiSelector:public QDialog {
     Q_OBJECT
 
     public:
-        AiSelector(QWidget * parent = 0, Qt::WFlags f = 0 );
+        AiSelector(QWidget * parent = 0, Qt::WindowFlags f = 0 );
         ~AiSelector();
         bool blur() { return ui.checkBoxBlur->checkState() == Qt::Checked; }
         int thold() { return ui.horizontalSlider->value(); }

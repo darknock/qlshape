@@ -87,7 +87,7 @@
 #
 
 //Wzorce które nie są krawędziami
-//do usówania szumów
+//do usuwania szumów
 @
 ...
 ...
@@ -95,7 +95,7 @@
 !
 .
 
-//do ścieniania linii
+//do zwężania linii
 @
 ###
 ...

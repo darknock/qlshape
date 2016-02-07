@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,10 +19,12 @@
  ***************************************************************************/
 
 #include "effects.h"
+
 #include <QImage>
 #include <QColor>
 
-QImage* toGray(const QImage* i) {
+QImage* toGray(const QImage* i)
+{
     QImage* newImage = new QImage(i->width(), i->height(), i->format());
     int gray, a;
     for (int x = 0; x < i->width(); x++)
@@ -34,17 +36,20 @@ QImage* toGray(const QImage* i) {
     return newImage;
 }
 
-QImage* toMono(const QImage* i) {
+QImage* toMono(const QImage* i)
+{
     return new QImage(i->convertToFormat(QImage::Format_Mono).convertToFormat(i->format()));
 }
 
-QImage* negate(const QImage* i) {
+QImage* negate(const QImage* i)
+{
     QImage* newImage = new QImage(*i);
     newImage->invertPixels();
     return newImage;
 }
 
-QImage* normalized(const QImage* i) {
+QImage* normalized(const QImage* i)
+{
     QImage* newImage = new QImage(i->width(), i->height(), i->format());
     const int yMin = 0, yMax = 255;
     int xMinR = 255, xMaxR = 0;
@@ -70,7 +75,8 @@ QImage* normalized(const QImage* i) {
     return newImage;
 }
 
-QImage* filterBf(const QImage* image, double f[], int size) {
+QImage* filterBf(const QImage* image, double f[], int size)
+{
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int n = size * size, t = 0;
     double div = 0, gray;
@@ -91,7 +97,8 @@ QImage* filterBf(const QImage* image, double f[], int size) {
     return newImage;
 }
 
-QImage* filterColorBf(const QImage* image, double f[], int size) {
+QImage* filterColorBf(const QImage* image, double f[], int size)
+{
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int n = size * size, t = 0;
     double div = 0, r, g, b;
@@ -116,7 +123,8 @@ QImage* filterColorBf(const QImage* image, double f[], int size) {
     return newImage;
 }
 
-QImage* filterSym(const QImage* image, double f[], int size) {
+QImage* filterSym(const QImage* image, double f[], int size)
+{
     QImage* midImage = new QImage(*image);
     QImage* newImage;
 
@@ -145,7 +153,8 @@ QImage* filterSym(const QImage* image, double f[], int size) {
     return newImage;
 }
 
-QImage* filterColorSym(const QImage* image, double f[], int size) {
+QImage* filterColorSym(const QImage* image, double f[], int size)
+{
     QImage* midImage = new QImage(*image);
     QImage* newImage;
 
@@ -191,7 +200,8 @@ QImage* filterColorSym(const QImage* image, double f[], int size) {
     return newImage;
 }
 
-QImage* gaussianBlur(const QImage* image) {
+QImage* gaussianBlur(const QImage* image)
+{
     QImage* newImage;
     const int size = 3;
     double gaussCurve[] = {
@@ -205,7 +215,8 @@ QImage* gaussianBlur(const QImage* image) {
     return converted;
 }
 
-QImage* gaussianBlur(const QImage* image, double sigma, int size) {
+QImage* gaussianBlur(const QImage* image, double sigma, int size)
+{
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     double *gaussCurve = new double[size];
     makeGaussCurve(gaussCurve, size, sigma);
@@ -219,7 +230,8 @@ QImage* gaussianBlur(const QImage* image, double sigma, int size) {
 
 //Ta funkcja wykorzystuje część kodu wtyczki DOG dla GIMP
 //Copyright (C) 1995 Spencer Kimball and Peter Mattis
-QImage* gaussianBlur(const QImage* image, double radius) {
+QImage* gaussianBlur(const QImage* image, double radius)
+{
     radius += 1.0;
     double std_dev = sqrt (-(radius * radius) / (2 * log (1.0 / 255.0)));
     double sigma = 2 * std_dev * std_dev;
@@ -231,7 +243,8 @@ QImage* gaussianBlur(const QImage* image, double radius) {
 
 //Ta funkcja wykorzystuje część kodu wtyczki DOG dla GIMP
 //Copyright (C) 1995 Spencer Kimball and Peter Mattis
-QImage* diffOfGaussian(const QImage* image, double radius1, double radius2, bool negative, bool normalize) {
+QImage* diffOfGaussian(const QImage* image, double radius1, double radius2, bool negative, bool normalize)
+{
     radius1 += 1.0;
     double std_dev = sqrt (-(radius1 * radius1) / (2 * log (1.0 / 255.0)));
     double sigma1 = 2 * std_dev * std_dev;
@@ -301,30 +314,35 @@ QImage* diffOfGaussian(const QImage* image, double radius1, double radius2, bool
         delete g1;
         delete g2;
         if (normalize) {
-            if (negative) newImage->invertPixels();
+            if (negative)
+                newImage->invertPixels();
             QImage *normal = normalized(newImage);
             delete newImage;
             return normal;
         }
-        if (negative) newImage->invertPixels();
+        if (negative)
+            newImage->invertPixels();
         return newImage;
     }
 }
 
-void makeGauss(double f[], int size, double sigma) {
+void makeGauss(double f[], int size, double sigma)
+{
     for (int x = 0; x < size; x++)
         for (int y = 0; y < size; y++) {
             f[x * size + y] = gauss(x, y, size, sigma);
         }
 }
 
-void makeGaussCurve(double f[], int size, double sigma) {
+void makeGaussCurve(double f[], int size, double sigma)
+{
     for (int x = 0; x < size; x++) {
         f[x] = gauss(x, size/2 + 1, size, sigma);
     }
 }
 
-QImage* laplace(const QImage* image, int mask, bool blur, bool negative, bool normalize) {
+QImage* laplace(const QImage* image, int mask, bool blur, bool negative, bool normalize)
+{
     const int size = 3;
     double lap4[] = {
                         0, -1,  0,
@@ -395,7 +413,8 @@ QImage* laplace(const QImage* image, int mask, bool blur, bool negative, bool no
     return converted;
 }
 
-QImage* zeroCrossing(const QImage* image, bool blur, int thold) {
+QImage* zeroCrossing(const QImage* image, bool blur, int thold)
+{
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     QImage* blured;
     if (blur) blured = gaussianBlur(image);
@@ -431,17 +450,24 @@ QImage* zeroCrossing(const QImage* image, bool blur, int thold) {
 
     bool minus = false, preMinus = false;
     for (quint32 i = 0; i < tableSize; i++) {
-        if (lapTable[i] < 0) minus = true;
-        else minus = false;
-        if (preMinus != minus) edgeTable[i] = 0;
-        else edgeTable[i] = 255;
+        if (lapTable[i] < 0)
+            minus = true;
+        else
+            minus = false;
+        if (preMinus != minus)
+            edgeTable[i] = 0;
+        else
+            edgeTable[i] = 255;
         preMinus = minus;
     }
     for (int y = 0; y < image->height(); y++)
         for (int x = 0; x < image->width(); x++) {
-            if (lapTable[x * image->height() + y] < 0) minus = true;
-            else minus = false;
-            if (preMinus != minus) edgeTable[x * image->height() + y] = 0;
+            if (lapTable[x * image->height() + y] < 0)
+                minus = true;
+            else
+                minus = false;
+            if (preMinus != minus)
+                edgeTable[x * image->height() + y] = 0;
             preMinus = minus;
         }
 
@@ -457,7 +483,8 @@ QImage* zeroCrossing(const QImage* image, bool blur, int thold) {
     return newImage;
 }
 
-void check(int x, int height, int y, int lowThold, quint8* gradient, bool *potencial, bool *checked, bool *edge) {
+void check(int x, int height, int y, int lowThold, quint8* gradient, bool *potencial, bool *checked, bool *edge)
+{
     checked[x * height + y] = true;
     if(gradient[x * height + y] > lowThold) {
         edge[x * height + y] = true;
@@ -483,11 +510,14 @@ void check(int x, int height, int y, int lowThold, quint8* gradient, bool *poten
     }
 }
 
-QImage* canny(const QImage* image, int hiThold, int lowThold, bool blur) {
+QImage* canny(const QImage* image, int hiThold, int lowThold, bool blur)
+{
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     QImage* blured;
-    if (blur) blured = gaussianBlur(image);
-    else blured = new QImage(*image);
+    if (blur)
+        blured = gaussianBlur(image);
+    else
+        blured = new QImage(*image);
 
     const int size = 3;
     int sumX, sumY, g;
@@ -550,22 +580,20 @@ QImage* canny(const QImage* image, int hiThold, int lowThold, bool blur) {
                 if(m > gradient[x * image->height() + y - 1] &&
                    m > gradient[x * image->height() + y + 1])
                     potencial[x * image->height() + y] = true;
-            } else
-                if(deg >= 23 && deg < 68) { // 45
+            } else if(deg >= 23 && deg < 68) { // 45
                     if(m > gradient[(x - 1) * image->height() + y - 1] &&
                        m > gradient[(x + 1) * image->height() + y + 1])
                         potencial[x * image->height() + y] = true;
-                } else
-                    if(deg >= 68 && deg < 113) { // 90
+            } else if(deg >= 68 && deg < 113) { // 90
                         if(m > gradient[(x + 1) * image->height() + y] &&
                            m > gradient[(x - 1) * image->height() + y])
                             potencial[x * image->height() + y] = true;
-                    } else
-                        if(deg >= 113 && deg < 158) { // 135
+            } else if(deg >= 113 && deg < 158) { // 135
                             if(m > gradient[(x + 1) * image->height() + y - 1] &&
                                m > gradient[(x - 1) * image->height() + y + 1])
                                 potencial[x * image->height() + y] = true;
                         }
+
         }
 
 //     Hysteresis

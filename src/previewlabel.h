@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,7 +30,7 @@ class QImage;
 class PreviewLabel : public QLabel {
     Q_OBJECT
 public:
-    PreviewLabel(QWidget * parent = 0, Qt::WFlags f = 0);
+    PreviewLabel(QWidget * parent = 0, Qt::WindowFlags f = 0);
     ~PreviewLabel();
     void setPreview(QImage *prev);
     void refresh() { setPixmap(QPixmap::fromImage(prevImage)); }

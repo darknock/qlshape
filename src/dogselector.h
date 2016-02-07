@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 #ifndef DOGSELECTOR_H
 #define DOGSELECTOR_H
 
-#include "../ui_dogselector.h"
+#include "ui_dogselector.h"
 
 using namespace Ui;
 
@@ -29,7 +29,7 @@ class DogSelector:public QDialog {
     Q_OBJECT
 
 public:
-    DogSelector(QWidget * parent = 0, Qt::WFlags f = 0 );
+    DogSelector(QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~DogSelector() {}
     double radius1() const { return ui.doubleSpinBox1->value(); }
     double radius2() const { return ui.doubleSpinBox2->value(); }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 #include "zeroselector.h"
 #include "effects.h"
 
-ZeroSelector::ZeroSelector(QWidget * parent, Qt::WFlags f) {
+ZeroSelector::ZeroSelector(QWidget * parent, Qt::WindowFlags f) {
     ui.setupUi(this);
     connect(ui.horizontalSlider, SIGNAL(sliderReleased()), this, SLOT(updateZero()));
     connect(ui.checkBox, SIGNAL(stateChanged(int)), this, SLOT(checkChange()));

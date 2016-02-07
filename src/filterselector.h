@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,15 +21,17 @@
 #ifndef FILTERSELECTOR_H
 #define FILTERSELECTOR_H
 
-#include "../ui_filterselector.h"
+#include "ui_filterselector.h"
+
 #include <QVector>
 
 using namespace Ui;
 
-class FilterSelector:public QDialog {
+class FilterSelector : public QDialog
+{
     Q_OBJECT
 public:
-    FilterSelector(QWidget * parent = 0, Qt::WFlags f = 0 );
+    FilterSelector(QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~FilterSelector() {}
     double* mask();
     QString filter() const {

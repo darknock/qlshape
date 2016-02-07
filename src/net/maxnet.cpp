@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Konrad Ciekot                                   *
+ *   Copyright (C) 2007 - 2016 by Konrad Ciekot                                   *
  *   darknock@o2.pl                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,11 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <iostream>
-// #include <QtDebug>
 #include "net.h"
 #include "node.h"
 #include "maxnet.h"
+
+#include <iostream>
+
+// #include <QtDebug>
 
 namespace darknocksBrain {
     Maxnet::Maxnet(int count, Net* parent) : parent(parent), count(count) {
