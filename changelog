@@ -1,0 +1,115 @@
+darknock (0.3.0) stable
+  * added Artificial Intelligence edge detection algorithm
+    + uses Hamming's recurent network
+  * fixed some bug in preview label
+  * updated Polish translation
+  * added French translation
+    + thanks to Steven Burch
+
+  -- Konrad Ciekot <darknock@o2.pl>  Tue, Aug 7 2007
+
+darknock (0.2.8) stable
+  * added Canny's edge detection operator
+  * added new preview label in selectors
+    + user can now move image to the
+      area of his interest
+  * updated Polish translation
+
+  -- Konrad Ciekot <darknock@o2.pl>  Tue, Aug 7 2007
+
+darknock (0.2.7) stable
+  * added Romanian translation 
+      thanks to Albert Mate, amate2@gmail.com
+  * updated Polish translation
+  * added Gaussian filter selection dialog
+  * improved filter selection dialog
+    + option to save and delete custom filters
+  * added algorithms for binary images
+    + line thining
+    + line filling
+
+  -- Konrad Ciekot <darknock@o2.pl>  Fri, Aug 3 2007
+
+darknock (0.2.6) stable
+  * added Swedish translation 
+      thanks to Johan Hedberg, johan.hedberg@crazzy.se
+  * darknocK now remembers current open path
+  * added filter selection dialog
+    + 4 high-pass filters
+    + 4 low-pass filters
+    + building custom filters option
+
+  -- Konrad Ciekot <darknock@o2.pl>  Wed, Aug 1 2007
+
+darknock (0.2.5) stable
+  * added Italian translation 
+      thanks to Magda Grzegorczyk
+  * added Turkisch translation 
+      thanks to Tutku Dalmaz, mektup@tutkudalmaz.org
+  * added Differential edge detection algorithm
+  * changed Robinson and Kirsch algorithm to use
+      8 masks instead of 4
+  * added Zero-Crossing algorithm
+
+  -- Konrad Ciekot <darknock@o2.pl>  Wed, Jul 25 2007
+
+darknock (0.2.4) stable
+  * created new "About" box
+  * updated Polish translation
+  * changed negation function to use binary negation
+
+  -- Konrad Ciekot <darknock@o2.pl>  Tue, Jul 17 2007
+
+darknock (0.23) stable
+  * fixed a bug with undo/redo infnit loop
+  * cleared a lot of memory leaks (almost all)
+  * removed the "preview flower"
+  * updated Polish translation
+
+  -- Konrad Ciekot <darknock@o2.pl>  Wed, Jul 11 2007
+
+darknock (0.22) stable
+  * added "open with" support
+    + program reads image given from command line
+  * added compass filters
+    + Prewitt(c), Sobel(c), Robinson and Kirsch
+  * added "Roberts cross" gradient filter
+  * few speed improvements in gradient filters
+    + Prewitt(g) and Sobel(g) now use only 2 masks
+      instead of previous 8 (results are the same)
+  * fixed a bug when a grayscale image is loaded
+
+  -- Konrad Ciekot <darknock@o2.pl>  Tue, Jul 10 2007
+
+darknock (0.21) stable
+  * created windows installer (NSIS)
+    + added plugin for jpeg read/write for this to work on all Win systems
+  * improved language handling for windows
+    + "LANG" is not set by default, so registry is used
+  * updated icons
+    + added icon for explorer on windows
+    + added program icon for Mac
+  * updated Debian package with app link
+  * created man page for darknock
+
+  -- Konrad Ciekot <darknock@o2.pl>  Fri, Jul 06 2007
+
+darknock (0.20) stable
+  * added polish translation
+  * cleaned some inactive menu entries
+  * made Debian package cleaner
+
+  -- Konrad Ciekot <darknock@o2.pl>  Tue, Jul 03 2007
+
+darknock (0.19) stable
+  * changed icons
+  * improved standard functions and program base
+  * added new edge detection algorithms
+    + Previtt
+    + Sobel
+  * improved earlier algorithms
+    + now borders of the image aren't black or white
+  * improved speed for gaussian blur (2 pass)
+  * added dialogs with preview
+
+  -- Konrad Ciekot <darknock@o2.pl>  Sun, Jul 01 2007
