@@ -29,6 +29,7 @@ FilterSelector::FilterSelector(QWidget * parent, Qt::WindowFlags f)
 {
     Q_UNUSED(parent)
     Q_UNUSED(f)
+
     ui.setupUi(this);
     fixSize();
 
@@ -46,10 +47,20 @@ FilterSelector::FilterSelector(QWidget * parent, Qt::WindowFlags f)
     connect(ui.deleteButton, SIGNAL(clicked()), this, SLOT(delButtonClick()));
     connect(lineEdit, SIGNAL(editingFinished()), this, SLOT(finishEditing()));
 
+#if QT_NO_DEBUG
+#if Q_OS_MAC
     dataFile = QDir::homePath() + "/.darknock/data/filters";
+#else
+    dataFile = QDir::homePath() + "/.darknock/data/filters";
+#endif
+#else
+    dataFile = "data/filters";
+#endif
+
     QFileInfo fileInfo(dataFile);
     QDir dir(fileInfo.absoluteDir());
-    if(!dir.exists()) dir.mkpath(fileInfo.absolutePath());
+    if(!dir.exists())
+        dir.mkpath(fileInfo.absolutePath());
 
     QFile file(dataFile);
     file.open(QFile::ReadOnly);
@@ -85,10 +96,11 @@ void FilterSelector::saveButtonClick()
     if(editDialog->exec()) {
         QVector<qint32> temp;
         temp << rows() << cols();
-        for (int j = 0; j < ui.tableWidget->rowCount(); j++)
+        for (int j = 0; j < ui.tableWidget->rowCount(); j++) {
             for (int i = 0; i < ui.tableWidget->columnCount(); i++) {
                 temp << (qint32)ui.tableWidget->item(j, i)->text().toInt();
             }
+        }
         customFiltersData.append(temp);
         customFilters.append(lineEdit->text());
         ui.comboBox->addItem(lineEdit->text());
@@ -98,7 +110,7 @@ void FilterSelector::saveButtonClick()
 void FilterSelector::delButtonClick()
 {
     QMessageBox::StandardButton ret;
-    ret = QMessageBox::warning(this, tr("darknocK"),
+    ret = QMessageBox::warning(this, tr("QLShape"),
                                tr("Do You really want to delete \"%1\" mask?").arg(ui.comboBox->currentText()),
                                   QMessageBox::Yes | QMessageBox::Cancel);
     if (ret == QMessageBox::Yes) {
@@ -115,81 +127,82 @@ void FilterSelector::setMask(int *f, int rowCount, int columnCount)
     QTableWidgetItem *item;
     ui.tableWidget->setRowCount(rowCount);
     ui.tableWidget->setColumnCount(columnCount);
-    for (int j = 0; j < ui.tableWidget->rowCount(); j++)
+    for (int j = 0; j < ui.tableWidget->rowCount(); j++) {
         for (int i = 0; i < ui.tableWidget->columnCount(); i++) {
             item = new QTableWidgetItem(tr("%1").arg(f[i + j * columnCount]));
             ui.tableWidget->setItem(j, i, item);
         }
-   fixSize();
+    }
+    fixSize();
 }
 
 void FilterSelector::selectFilter(int i)
 {
     switch(i) {
-        case 0: {   //Mean-removal
-            int mr[] = {
-                -1,-1,-1,
-                -1, 9,-1,
-                -1,-1,-1
-            };
-            setMask(mr, 3, 3);
-        } break;
-        case 1: {   //HP1
-            int hp1[] = {
-                 0,-1, 0,
-                -1, 5,-1,
-                 0,-1, 0
-            };
-            setMask(hp1, 3, 3);
-        } break;
-        case 2: {   //HP2
-            int hp2[] = {
-                 1,-2, 1,
-                -2, 5,-2,
-                 1,-2, 1
-            };
-            setMask(hp2, 3, 3);
-        } break;
-        case 3: {   //HP3
-            int hp3[] = {
-                 0,-1, 0,
-                -1,20,-1,
-                 0,-1, 0
-            };
-            setMask(hp3, 3, 3);
-        } break;
-        case 4: {   //Mean
-            int m[] = {
-                1, 1, 1,
-                1, 1, 1,
-                1, 1, 1
-            };
-            setMask(m, 3, 3);
-        } break;
-        case 5: {   //LP1
-            int lp1[] = {
-                1, 1, 1,
-                1, 2, 1,
-                1, 1, 1
-            };
-            setMask(lp1, 3, 3);
-        } break;
-        case 6: {   //LP2
-            int lp2[] = {
-                1, 1, 1,
-                1, 4, 1,
-                1, 1, 1
-            };
-            setMask(lp2, 3, 3);
-        } break;
-        case 7: {   //Gauss
-            int g[] = {
-                1, 2, 1,
-                2, 4, 2,
-                1, 2, 1
-            };
-            setMask(g, 3, 3);
-        } break;
+    case 0: {   //Mean-removal
+        int mr[] = {
+            -1,-1,-1,
+            -1, 9,-1,
+            -1,-1,-1
+        };
+        setMask(mr, 3, 3);
+    } break;
+    case 1: {   //HP1
+        int hp1[] = {
+             0,-1, 0,
+            -1, 5,-1,
+             0,-1, 0
+        };
+        setMask(hp1, 3, 3);
+    } break;
+    case 2: {   //HP2
+        int hp2[] = {
+             1,-2, 1,
+            -2, 5,-2,
+             1,-2, 1
+        };
+        setMask(hp2, 3, 3);
+    } break;
+    case 3: {   //HP3
+        int hp3[] = {
+             0,-1, 0,
+            -1,20,-1,
+             0,-1, 0
+        };
+        setMask(hp3, 3, 3);
+    } break;
+    case 4: {   //Mean
+        int m[] = {
+            1, 1, 1,
+            1, 1, 1,
+            1, 1, 1
+        };
+        setMask(m, 3, 3);
+    } break;
+    case 5: {   //LP1
+        int lp1[] = {
+            1, 1, 1,
+            1, 2, 1,
+            1, 1, 1
+        };
+        setMask(lp1, 3, 3);
+    } break;
+    case 6: {   //LP2
+        int lp2[] = {
+            1, 1, 1,
+            1, 4, 1,
+            1, 1, 1
+        };
+        setMask(lp2, 3, 3);
+    } break;
+    case 7: {   //Gauss
+        int g[] = {
+            1, 2, 1,
+            2, 4, 2,
+            1, 2, 1
+        };
+        setMask(g, 3, 3);
+    } break;
     }
     check();
 }
@@ -208,10 +221,11 @@ void FilterSelector::selectCustomFilter(int i)
 double* FilterSelector::mask()
 {
     double *f = new double[ui.tableWidget->columnCount() * ui.tableWidget->rowCount()];
-    for (int j = 0; j < ui.tableWidget->rowCount(); j++)
+    for (int j = 0; j < ui.tableWidget->rowCount(); j++) {
         for (int i = 0; i < ui.tableWidget->columnCount(); i++) {
             f[i + j * ui.tableWidget->columnCount()] = ui.tableWidget->item(j, i)->text().toInt();
         }
+    }
     return f;
 }
 
@@ -263,7 +277,7 @@ void FilterSelector::setCols(int cols)
 void FilterSelector::check()
 {
     bool ok;
-    for (int j = 0; j < ui.tableWidget->rowCount(); j++)
+    for (int j = 0; j < ui.tableWidget->rowCount(); j++) {
         for (int i = 0; i < ui.tableWidget->columnCount(); i++) {
             if(ui.tableWidget->item(j, i) == 0) {
                 ui.okButton->setEnabled(false);
@@ -277,8 +291,11 @@ void FilterSelector::check()
                 return;
             }
         }
+    }
+
     ui.okButton->setEnabled(true);
-    if(ui.checkBox->checkState() == Qt::Checked) ui.saveButton->setEnabled(true);
+    if(ui.checkBox->checkState() == Qt::Checked)
+        ui.saveButton->setEnabled(true);
 }
 
 void FilterSelector::fixSize()

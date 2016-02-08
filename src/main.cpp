@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
 
       QLShape * mw = new QLShape();
       mw->show();
-      if(argc == 2) mw->preOpen(argv[1]);
+      if(argc == 2)
+          mw->preOpen(argv[1]);
       return app.exec();
 }

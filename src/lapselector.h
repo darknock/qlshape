@@ -25,7 +25,8 @@
 
 using namespace Ui;
 
-class LapSelector:public QDialog {
+class LapSelector : public QDialog
+{
     Q_OBJECT
 
 public:

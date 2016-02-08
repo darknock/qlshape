@@ -25,7 +25,8 @@
 
 using namespace Ui;
 
-class EdgeSelector:public QDialog {
+class EdgeSelector : public QDialog
+{
     Q_OBJECT
 
 public:

@@ -40,7 +40,8 @@ class CannySelector;
 class AiSelector;
 class AboutQLShape;
 
-class QLShape : public QMainWindow {
+class QLShape : public QMainWindow
+{
     Q_OBJECT
 
 public:

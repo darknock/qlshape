@@ -30,7 +30,8 @@ namespace darknocksBrain {
 
 using namespace Ui;
 
-class AiSelector:public QDialog {
+class AiSelector : public QDialog
+{
     Q_OBJECT
 
     public:

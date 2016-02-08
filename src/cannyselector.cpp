@@ -21,7 +21,11 @@
 #include "cannyselector.h"
 #include "effects.h"
 
-CannySelector::CannySelector(QWidget * parent, Qt::WindowFlags f) {
+CannySelector::CannySelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
+
     ui.setupUi(this);
 
     connect(ui.spinBoxHi, SIGNAL(valueChanged(int)), this, SLOT(updateCannyHi()));
@@ -31,31 +35,38 @@ CannySelector::CannySelector(QWidget * parent, Qt::WindowFlags f) {
     connect(ui.previewLabel, SIGNAL(dragingFinished()), this, SLOT(updateCannyHi()));
 }
 
-void CannySelector::updateCannyHi() {
+void CannySelector::updateCannyHi()
+{
     if (ui.checkBox->checkState() == Qt::Checked) {
-        if(ui.spinBoxHi->value() < ui.spinBoxLow->value()) ui.spinBoxLow->setValue(ui.spinBoxHi->value());
+        if (ui.spinBoxHi->value() < ui.spinBoxLow->value())
+            ui.spinBoxLow->setValue(ui.spinBoxHi->value());
         QImage *diffy = canny(ui.previewLabel->preview(), tholdHi(), tholdLow(), blur());
         ui.previewLabel->setPixmap(QPixmap::fromImage(*diffy));
         delete diffy;
     }
 }
 
-void CannySelector::updateCannyLow() {
+void CannySelector::updateCannyLow()
+{
     if (ui.checkBox->checkState() == Qt::Checked) {
-        if(ui.spinBoxHi->value() < ui.spinBoxLow->value()) ui.spinBoxHi->setValue(ui.spinBoxLow->value());
+        if (ui.spinBoxHi->value() < ui.spinBoxLow->value())
+            ui.spinBoxHi->setValue(ui.spinBoxLow->value());
         QImage *diffy = canny(ui.previewLabel->preview(), tholdHi(), tholdLow(), blur());
         ui.previewLabel->setPixmap(QPixmap::fromImage(*diffy));
         delete diffy;
     }
 }
 
-void CannySelector::checkChange() {
-    if (ui.checkBox->checkState() != Qt::Checked) {
+void CannySelector::checkChange()
+{
+    if (ui.checkBox->checkState() != Qt::Checked)
         ui.previewLabel->refresh();
-    } else updateCannyHi();
+    else
+        updateCannyHi();
 }
 
-void CannySelector::setPreview(QImage* prev) {
+void CannySelector::setPreview(QImage* prev)
+{
     ui.previewLabel->setPreview(prev);
     updateCannyHi();
 }

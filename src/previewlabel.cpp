@@ -22,18 +22,23 @@
 
 #include <QMouseEvent>
 
-PreviewLabel::PreviewLabel(QWidget * parent, Qt::WindowFlags f) : QLabel(parent, f) {}
+PreviewLabel::PreviewLabel(QWidget * parent, Qt::WindowFlags f)
+    : QLabel(parent, f)
+{}
 
-PreviewLabel::~PreviewLabel() {}
+PreviewLabel::~PreviewLabel()
+{}
 
-void PreviewLabel::mousePressEvent(QMouseEvent *event) {
+void PreviewLabel::mousePressEvent(QMouseEvent *event)
+{
     oldX = x + event->x();
     oldY = y + event->y();
     event->accept();
     setCursor(Qt::ClosedHandCursor);
 }
 
-void PreviewLabel::mouseMoveEvent(QMouseEvent *event) {
+void PreviewLabel::mouseMoveEvent(QMouseEvent *event)
+{
     newX = oldX - event->x();
     newY = oldY - event->y();
     if ( !outOfBounds( newX, newY ) ) {
@@ -42,17 +47,21 @@ void PreviewLabel::mouseMoveEvent(QMouseEvent *event) {
         prevImage = image->copy(x, y, w, h);
         setPixmap(QPixmap::fromImage(prevImage));
         event->accept();
-    } else event->ignore();
+    } else {
+        event->ignore();
+    }
 }
 
-void PreviewLabel::mouseReleaseEvent(QMouseEvent *event) {
+void PreviewLabel::mouseReleaseEvent(QMouseEvent *event)
+{
     if (oldX != event->x() || oldX != event->y())
         emit dragingFinished();
     setCursor(Qt::OpenHandCursor);
     event->accept();
 }
 
-void PreviewLabel::setPreview(QImage* prev) {
+void PreviewLabel::setPreview(QImage* prev)
+{
     image = prev;
     w = width() - 10 < prev->width() ? width() - 10 : prev->width();
     h = height() - 10 < prev->height() ? height() - 10 : prev->height();;
@@ -63,20 +72,29 @@ void PreviewLabel::setPreview(QImage* prev) {
     prevImage = image->copy(x, y, w, h);
 }
 
-bool PreviewLabel::outOfBounds(int x, int y) {
-    if ( x < 0 && y < 0 ) return true;
-    if ( x + w > image->width() && y + h > image->height() ) return true;
+bool PreviewLabel::outOfBounds(int x, int y)
+{
+    if ( x < 0 && y < 0 )
+        return true;
+    if ( x + w > image->width() && y + h > image->height() )
+        return true;
     return false;
 }
 
-bool PreviewLabel::xOutOfBounds(int x) {
-    if ( x < 0 ) return true;
-    if ( x + w > image->width() ) return true;
+bool PreviewLabel::xOutOfBounds(int x)
+{
+    if ( x < 0 )
+        return true;
+    if ( x + w > image->width() )
+        return true;
     return false;
 }
 
-bool PreviewLabel::yOutOfBounds(int y) {
-    if ( y < 0 ) return true;
-    if ( y + h > image->height() ) return true;
+bool PreviewLabel::yOutOfBounds(int y)
+{
+    if ( y < 0 )
+        return true;
+    if ( y + h > image->height() )
+        return true;
     return false;
 }

@@ -23,12 +23,16 @@
 
 #include <QAction>
 
-History::History(QLShape *d) : max(20) {
+History::History(QLShape *d)
+    : max(20)
+{
     parent = d;
     iter = end();
+    iterDscr = dscr.end();
 }
 
-void History::reset(QImage i) {
+void History::reset(QImage i)
+{
     clear();
     append(i);
     dscr.append("");
@@ -36,44 +40,57 @@ void History::reset(QImage i) {
     iterDscr = dscr.end();
 }
 
-bool History::hasNext() {
+bool History::hasNext()
+{
     return (iter != end() - 1);
 }
 
-bool History::hasPrevious() {
+bool History::hasPrevious()
+{
     return (iter != begin());
 }
 
-void History::undo() {
+void History::undo()
+{
     if(hasPrevious()) {
         parent->setCurrentImage(new QImage(*--iter));
         --iterDscr;
     }
 }
 
-void History::redo() {
+void History::redo()
+{
     if(hasNext()) {
         parent->setCurrentImage(new QImage(*++iter));
         ++iterDscr;
     }
 }
 
-void History::add(QImage i, QString ds) {
-    iter = insert(iter + 1, i);
-    erase(iter + 1 , end());
-    if(size() >= max) removeFirst();
+void History::add(QImage i, QString ds)
+{
+    auto before = iter == end() ? iter : iter + 1;
+    iter = insert(before, i);
+    erase(iter + 1, end());
+    if(size() >= max)
+        removeFirst();
 
-    iterDscr = dscr.insert(iterDscr + 1, ds);
-    dscr.erase(iterDscr + 1 , dscr.end());
-    if(size() >= max) dscr.removeFirst();
+    auto beforeDscr = iterDscr == dscr.end() ? iterDscr : iterDscr + 1;
+    iterDscr = dscr.insert(beforeDscr, ds);
+    dscr.erase(iterDscr + 1, dscr.end());
+    if(size() >= max)
+        dscr.removeFirst();
 }
 
-QString History::peekNextDscr() {
-    if(hasNext()) return *(iterDscr + 1);
+QString History::peekNextDscr()
+{
+    if(hasNext())
+        return *(iterDscr + 1);
     return QString("");
 }
 
-QString History::peekPreviousDscr() {
-    if(hasPrevious()) return *(iterDscr);
+QString History::peekPreviousDscr()
+{
+    if(hasPrevious())
+        return *(iterDscr);
     return QString("");
 }

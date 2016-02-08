@@ -27,14 +27,15 @@ class QMouseEvent;
 class QPoint;
 class QImage;
 
-class PreviewLabel : public QLabel {
+class PreviewLabel : public QLabel
+{
     Q_OBJECT
 public:
     PreviewLabel(QWidget * parent = 0, Qt::WindowFlags f = 0);
     ~PreviewLabel();
     void setPreview(QImage *prev);
     void refresh() { setPixmap(QPixmap::fromImage(prevImage)); }
-    const QImage *preview() const { return &prevImage; };
+    const QImage *preview() const { return &prevImage; }
     QRect borders() { return QRect(x, y, image->width(), image->height()); }
 signals:
     void dragingFinished();

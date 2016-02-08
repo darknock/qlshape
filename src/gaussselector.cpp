@@ -21,7 +21,11 @@
 #include "gaussselector.h"
 #include "effects.h"
 
-GaussSelector::GaussSelector(QWidget * parent, Qt::WindowFlags f) {
+GaussSelector::GaussSelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
+
     ui.setupUi(this);
 
     connect(ui.doubleSpinBox1, SIGNAL(valueChanged(double)), this, SLOT(updateGauss()));
@@ -29,7 +33,8 @@ GaussSelector::GaussSelector(QWidget * parent, Qt::WindowFlags f) {
     connect(ui.previewLabel, SIGNAL(dragingFinished()), this, SLOT(updateGauss()));
 }
 
-void GaussSelector::updateGauss() {
+void GaussSelector::updateGauss()
+{
     if (ui.checkBox->checkState() == Qt::Checked) {
         QImage *gaussy = gaussianBlur(ui.previewLabel->preview(), radius());
         ui.previewLabel->setPixmap(QPixmap::fromImage(*gaussy));
@@ -37,13 +42,16 @@ void GaussSelector::updateGauss() {
     }
 }
 
-void GaussSelector::checkChange() {
-    if (ui.checkBox->checkState() != Qt::Checked) {
+void GaussSelector::checkChange()
+{
+    if (ui.checkBox->checkState() != Qt::Checked)
         ui.previewLabel->refresh();
-    } else updateGauss();
+    else
+        updateGauss();
 }
 
-void GaussSelector::setPreview(QImage* prev) {
+void GaussSelector::setPreview(QImage* prev)
+{
     ui.previewLabel->setPreview(prev);
     updateGauss();
 }

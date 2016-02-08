@@ -23,18 +23,29 @@
 #include "net/hamming.h"
 #include "net/pattern.h"
 
-AiSelector::AiSelector(QWidget * parent, Qt::WindowFlags f) {
+AiSelector::AiSelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
+
     ui.setupUi(this);
-#ifdef Q_OS_X11
+#if QT_NO_DEBUG
+    #ifdef Q_OS_X11
     darknocksBrain::PatternSet pSet("/usr/share/darknock/data/input");
-#endif
-
-#ifdef Q_OS_MAC
+    #endif
+    #ifdef Q_OS_MAC
+    //TODO: use bundle Resources path
     darknocksBrain::PatternSet pSet("/usr/share/darknock/data/input");
-#endif
-
-#ifdef Q_OS_WIN
+    #endif
+    #ifdef Q_OS_WIN
     darknocksBrain::PatternSet pSet("data/input");
+    #endif
+#else
+    #ifdef Q_OS_MAC
+    darknocksBrain::PatternSet pSet("../Resources/data/input");
+    #else
+    darknocksBrain::PatternSet pSet("data/input");
+    #endif
 #endif
 
     hamming = new darknocksBrain::Hamming(&pSet);
@@ -54,13 +65,15 @@ void AiSelector::updateAi() {
 }
 
 void AiSelector::checkChange() {
-    if (ui.checkBox->checkState() != Qt::Checked) {
+    if (ui.checkBox->checkState() != Qt::Checked)
         ui.previewLabel->refresh();
-    } else updateAi();
+    else
+        updateAi();
 }
 
 void AiSelector::checkBlurChange() {
-    if(!d) delete d;
+    if (!d)
+        delete d;
     QApplication::setOverrideCursor(Qt::WaitCursor);
     d = derivative(prev, blur());
     min = d->at(0), max = d->at(0);

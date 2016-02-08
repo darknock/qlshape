@@ -25,6 +25,7 @@ LapSelector::LapSelector(QWidget * parent, Qt::WindowFlags f)
 {
     Q_UNUSED(parent)
     Q_UNUSED(f)
+
     ui.setupUi(this);
 
     connect(ui.radioButton4, SIGNAL(clicked(bool)), this, SLOT(updateLap()));
@@ -47,11 +48,10 @@ void LapSelector::updateLap()
 
 void LapSelector::checkChange()
 {
-    if (ui.checkBox->checkState() != Qt::Checked) {
+    if (ui.checkBox->checkState() != Qt::Checked)
         ui.previewLabel->refresh();
-    } else {
+    else
         updateLap();
-    }
 }
 
 void LapSelector::setPreview(QImage* prev)

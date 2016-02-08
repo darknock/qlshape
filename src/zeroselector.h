@@ -25,7 +25,8 @@
 
 using namespace Ui;
 
-class ZeroSelector:public QDialog {
+class ZeroSelector : public QDialog
+{
     Q_OBJECT
 
 public:

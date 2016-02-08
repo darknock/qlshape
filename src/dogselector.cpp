@@ -25,6 +25,7 @@ DogSelector::DogSelector(QWidget * parent, Qt::WindowFlags f)
 {
     Q_UNUSED(parent)
     Q_UNUSED(f)
+
     ui.setupUi(this);
 
     connect(ui.doubleSpinBox1, SIGNAL(valueChanged(double)), this, SLOT(updateDog()));
@@ -46,9 +47,10 @@ void DogSelector::updateDog()
 
 void DogSelector::checkChange()
 {
-    if (ui.checkBox->checkState() != Qt::Checked) {
+    if (ui.checkBox->checkState() != Qt::Checked)
         ui.previewLabel->refresh();
-    } else updateDog();
+    else
+        updateDog();
 }
 
 void DogSelector::setPreview(QImage* prev)

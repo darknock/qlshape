@@ -49,11 +49,12 @@ namespace darknocksBrain {
     void PatternSet::load(std::string inputFile) {
         contents.clear();
         std::ifstream ifs(inputFile.c_str());
-        if ( !ifs ) 
+        if ( !ifs ) {
             throw std::runtime_error("Cannot open file " + inputFile);
+        }
 
         std::string s;
-        char c;
+        char c = '\0';
         while( c != '$' && !ifs.fail() ) {
             ifs.get(c);
             if( c == '\n') continue;

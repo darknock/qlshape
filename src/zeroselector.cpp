@@ -21,7 +21,11 @@
 #include "zeroselector.h"
 #include "effects.h"
 
-ZeroSelector::ZeroSelector(QWidget * parent, Qt::WindowFlags f) {
+ZeroSelector::ZeroSelector(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
+
     ui.setupUi(this);
     connect(ui.horizontalSlider, SIGNAL(sliderReleased()), this, SLOT(updateZero()));
     connect(ui.checkBox, SIGNAL(stateChanged(int)), this, SLOT(checkChange()));
@@ -29,7 +33,8 @@ ZeroSelector::ZeroSelector(QWidget * parent, Qt::WindowFlags f) {
     connect(ui.previewLabel, SIGNAL(dragingFinished()), this, SLOT(updateZero()));
 }
 
-void ZeroSelector::updateZero() {
+void ZeroSelector::updateZero()
+{
     if (ui.checkBox->checkState() == Qt::Checked) {
         QImage *zero = zeroCrossing(ui.previewLabel->preview(), blur(), thold());
         ui.previewLabel->setPixmap(QPixmap::fromImage(*zero));
@@ -37,13 +42,16 @@ void ZeroSelector::updateZero() {
     }
 }
 
-void ZeroSelector::checkChange() {
-    if (ui.checkBox->checkState() != Qt::Checked) {
+void ZeroSelector::checkChange()
+{
+    if (ui.checkBox->checkState() != Qt::Checked)
         ui.previewLabel->refresh();
-    } else updateZero();
+    else
+        updateZero();
 }
 
-void ZeroSelector::setPreview(QImage* prev) {
+void ZeroSelector::setPreview(QImage* prev)
+{
     ui.previewLabel->setPreview(prev);
     updateZero();
 }

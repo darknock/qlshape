@@ -27,12 +27,14 @@ QImage* toGray(const QImage* i)
 {
     QImage* newImage = new QImage(i->width(), i->height(), i->format());
     int gray, a;
-    for (int x = 0; x < i->width(); x++)
+    for (int x = 0; x < i->width(); x++) {
         for (int y = 0; y < i->height(); y++) {
             gray = qGray(i->pixel(x, y));
             a = qAlpha(i->pixel(x, y));
             newImage->setPixel(x, y, qRgba(gray, gray, gray, a));
         }
+    }
+
     return newImage;
 }
 
@@ -56,22 +58,31 @@ QImage* normalized(const QImage* i)
     int xMinG = 255, xMaxG = 0;
     int xMinB = 255, xMaxB = 0;
     double r, g, b;
-    for (int x = 0; x < i->width(); x++)
+    for (int x = 0; x < i->width(); x++) {
         for (int y = 0; y < i->height(); y++) {
-            if (xMinR > qRed(i->pixel(x, y))) xMinR = qRed(i->pixel(x, y));
-            if (xMaxR < qRed(i->pixel(x, y))) xMaxR = qRed(i->pixel(x, y));
-            if (xMinG > qGreen(i->pixel(x, y))) xMinG = qGreen(i->pixel(x, y));
-            if (xMaxG < qGreen(i->pixel(x, y))) xMaxG = qGreen(i->pixel(x, y));
-            if (xMinB > qBlue(i->pixel(x, y))) xMinB = qBlue(i->pixel(x, y));
-            if (xMaxB < qBlue(i->pixel(x, y))) xMaxB = qBlue(i->pixel(x, y));
+            if (xMinR > qRed(i->pixel(x, y)))
+                xMinR = qRed(i->pixel(x, y));
+            if (xMaxR < qRed(i->pixel(x, y)))
+                xMaxR = qRed(i->pixel(x, y));
+            if (xMinG > qGreen(i->pixel(x, y)))
+                xMinG = qGreen(i->pixel(x, y));
+            if (xMaxG < qGreen(i->pixel(x, y)))
+                xMaxG = qGreen(i->pixel(x, y));
+            if (xMinB > qBlue(i->pixel(x, y)))
+                xMinB = qBlue(i->pixel(x, y));
+            if (xMaxB < qBlue(i->pixel(x, y)))
+                xMaxB = qBlue(i->pixel(x, y));
         }
-    for (int x = 0; x < i->width(); x++)
+    }
+
+    for (int x = 0; x < i->width(); x++) {
         for (int y = 0; y < i->height(); y++) {
             r = yMin + (qRed(i->pixel(x, y)) - xMinR) * (yMax * 1.0 / (xMaxR - xMinR));
             g = yMin + (qGreen(i->pixel(x, y)) - xMinG) * (yMax * 1.0 / (xMaxG - xMinG));
             b = yMin + (qBlue(i->pixel(x, y)) - xMinB) * (yMax *1.0 / (xMaxB - xMinB));
             newImage->setPixel(x, y, qRgba(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b), qAlpha(i->pixel(x, y))));
         }
+    }
     return newImage;
 }
 
@@ -80,20 +91,28 @@ QImage* filterBf(const QImage* image, double f[], int size)
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int n = size * size, t = 0;
     double div = 0, gray;
-    for (int i = 0; i < size * size; i++) div += f[i];
-    if (div != 0) for (int i = 0; i < size * size; i++) f[i] /= div;
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int i = 0; i < size * size; i++)
+        div += f[i];
+    if (div != 0) {
+        for (int i = 0; i < size * size; i++)
+            f[i] /= div;
+    }
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             gray = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < n ? t : t = 0;
                     gray += qGray(image->pixel(x + i, y + j)) * f[t];
                     t++;
                 }
+            }
             gray = gray < 0 ? 0 : gray > 255 ? 255 : gray;
             newImage->setPixel(x, y, qRgb(static_cast<int>(gray), static_cast<int>(gray), static_cast<int>(gray)));
         }
+    }
+
     return newImage;
 }
 
@@ -102,12 +121,17 @@ QImage* filterColorBf(const QImage* image, double f[], int size)
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int n = size * size, t = 0;
     double div = 0, r, g, b;
-    for (int i = 0; i < size * size; i++) div += f[i];
-    if (div != 0) for (int i = 0; i < size * size; i++) f[i] /= div;
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int i = 0; i < size * size; i++)
+        div += f[i];
+    if (div != 0) {
+        for (int i = 0; i < size * size; i++)
+            f[i] /= div;
+    }
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             r = g = b = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < n ? t : t = 0;
                     r += qRed(image->pixel(x + i, y + j)) * f[t];
@@ -115,11 +139,15 @@ QImage* filterColorBf(const QImage* image, double f[], int size)
                     b += qBlue(image->pixel(x + i, y + j)) * f[t];
                     t++;
                 }
+            }
+
             r = r < 0 ? 0 : r > 255 ? 255 : r;
             g = g < 0 ? 0 : g > 255 ? 255 : g;
             b = b < 0 ? 0 : b > 255 ? 255 : b;
             newImage->setPixel(x, y, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
         }
+    }
+
     return newImage;
 }
 
@@ -129,26 +157,37 @@ QImage* filterSym(const QImage* image, double f[], int size)
     QImage* newImage;
 
     double div = 0, gray;
-    for (int i = 0; i < size; i++) div += f[i];
-    if (div != 0) for (int i = 0; i < size; i++) f[i] /= div;
+    for (int i = 0; i < size; i++)
+        div += f[i];
+    if (div != 0) {
+        for (int i = 0; i < size; i++)
+            f[i] /= div;
+    }
 
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = 0; y < image->height(); y++) {
             gray = 0;
             for (int i = 0; i < size; i++)
                 gray += qGray(image->pixel(x - ( (size-1) >> 1) + i, y)) * f[i];
-            if (div == 0) gray = gray < 0 ? 0 : gray > 255 ? 255 : gray;
+            if (div == 0)
+                gray = gray < 0 ? 0 : gray > 255 ? 255 : gray;
             midImage->setPixel(x, y, qRgb(static_cast<int>(gray), static_cast<int>(gray), static_cast<int>(gray)));
         }
+    }
+
     newImage = new QImage(*midImage);
-    for (int x = 0; x < image->width(); x++)
+
+    for (int x = 0; x < image->width(); x++) {
         for (int y =  size/2; y < image->height() - size/2; y++) {
             gray = 0;
             for (int i = 0; i < size; i++)
                 gray += qGray(midImage->pixel(x, y - ( (size-1) >> 1) + i)) * f[i];
-            if (div == 0) gray = gray < 0 ? 0 : gray > 255 ? 255 : gray;
+            if (div == 0)
+                gray = gray < 0 ? 0 : gray > 255 ? 255 : gray;
             newImage->setPixel(x, y, qRgb(static_cast<int>(gray), static_cast<int>(gray), static_cast<int>(gray)));
         }
+    }
+
     delete midImage;
     return newImage;
 }
@@ -160,10 +199,14 @@ QImage* filterColorSym(const QImage* image, double f[], int size)
 
     double div = 0, r, g, b;
     int ind;
-    for (int i = 0; i < size; i++) div += f[i];
-    if (div != 0) for (int i = 0; i < size; i++) f[i] /= div;
+    for (int i = 0; i < size; i++)
+        div += f[i];
+    if (div != 0) {
+        for (int i = 0; i < size; i++)
+            f[i] /= div;
+    }
 
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = 0; y < image->height(); y++) {
             r = g = b = 0;
             for (int i = 0; i < size; i++) {
@@ -179,8 +222,10 @@ QImage* filterColorSym(const QImage* image, double f[], int size)
             }
             midImage->setPixel(x, y, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
         }
+    }
+
     newImage = new QImage(*midImage);
-    for (int x = 0; x < image->width(); x++)
+    for (int x = 0; x < image->width(); x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             r = g = b = 0;
             for (int i = 0; i < size; i++) {
@@ -196,6 +241,8 @@ QImage* filterColorSym(const QImage* image, double f[], int size)
             }
             newImage->setPixel(x, y, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
         }
+    }
+
     delete midImage;
     return newImage;
 }
@@ -204,14 +251,16 @@ QImage* gaussianBlur(const QImage* image)
 {
     QImage* newImage;
     const int size = 3;
-    double gaussCurve[] = {
-                              1, 2, 1
-                          };
-    if (image->isGrayscale()) newImage = filterSym(image, gaussCurve, size);
-    else newImage = filterColorSym(image, gaussCurve, size);
+    double gaussCurve[] = { 1, 2, 1 };
+    if (image->isGrayscale())
+        newImage = filterSym(image, gaussCurve, size);
+    else
+        newImage = filterColorSym(image, gaussCurve, size);
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
@@ -220,11 +269,14 @@ QImage* gaussianBlur(const QImage* image, double sigma, int size)
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     double *gaussCurve = new double[size];
     makeGaussCurve(gaussCurve, size, sigma);
-    if (image->isGrayscale()) newImage = filterSym(image, gaussCurve, size);
-    else newImage = filterColorSym(image, gaussCurve, size);
+    if (image->isGrayscale())
+        newImage = filterSym(image, gaussCurve, size);
+    else
+        newImage = filterColorSym(image, gaussCurve, size);
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
@@ -237,7 +289,9 @@ QImage* gaussianBlur(const QImage* image, double radius)
     double sigma = 2 * std_dev * std_dev;
     double l = sqrt (-sigma * log (1.0 / 255.0));
     int n = static_cast<int>(ceil(l) * 2);
-    if ((n % 2) == 0) n ++;
+    if ((n % 2) == 0)
+        ++n;
+
     return gaussianBlur(image, sigma, n);
 }
 
@@ -250,14 +304,16 @@ QImage* diffOfGaussian(const QImage* image, double radius1, double radius2, bool
     double sigma1 = 2 * std_dev * std_dev;
     double l = sqrt (-sigma1 * log (1.0 / 255.0));
     int n1 = static_cast<int>(ceil(l) * 2);
-    if ((n1 % 2) == 0) n1++;
+    if ((n1 % 2) == 0)
+        ++n1;
 
     radius2 += 1.0;
     std_dev = sqrt (-(radius2 * radius2) / (2 * log (1.0 / 255.0)));
     double sigma2 = 2 * std_dev * std_dev;
     l = sqrt (-sigma2 * log (1.0 / 255.0));
     int n2 = static_cast<int>(ceil(l) * 2);
-    if ((n2 % 2) == 0) n2++;
+    if ((n2 % 2) == 0)
+        ++n2;
 
     const int thold = 0;
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
@@ -267,7 +323,7 @@ QImage* diffOfGaussian(const QImage* image, double radius1, double radius2, bool
 
     if (!image->isGrayscale()) {
         double r, g, b, a;
-        for (int x = size/2; x < image->width() - size/2; x++)
+        for (int x = size/2; x < image->width() - size/2; x++) {
             for (int y = size/2; y < image->height() - size/2; y++) {
                 r = qRed(g1->pixel(x,y)) - qRed(g2->pixel(x,y));
                 r = r < thold ? 0 : r > 255 ? 255 : r;
@@ -278,41 +334,19 @@ QImage* diffOfGaussian(const QImage* image, double radius1, double radius2, bool
                 a = qAlpha(image->pixel(x,y));
                 newImage->setPixel(x, y, qRgba(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b), static_cast<int>(a)));
             }
-        for (int i = 0; i < image->width(); ++i)
-            for (int j = 0; j < image->height(); ++j) {
-                if (i < size/2 || i > image->width() - size/2 - 1)
-                    qAlpha(image->pixel(i, j)) != 255 ? newImage->setPixel(i, j, qAlpha(image->pixel(i, j))) : newImage->setPixel(i, j, 0);
-                if (j < size/2 || j > image->height() - size/2 - 1)
-                    qAlpha(image->pixel(i, j)) != 255 ? newImage->setPixel(i, j, qAlpha(image->pixel(i, j))) : newImage->setPixel(i, j, 0);
-            }
-        delete g1;
-        delete g2;
-        if (normalize) {
-            if (negative) newImage->invertPixels();
-            QImage *normal = normalized(newImage);
-            delete newImage;
-            return normal;
         }
-        if (negative) newImage->invertPixels();
-        return newImage;
-    } else { //if is gray
-        double gray, a;
-        for (int x = size/2; x < image->width() - size/2; x++)
-            for (int y = size/2; y < image->height() - size/2; y++) {
-                gray = qRed(g1->pixel(x,y)) - qRed(g2->pixel(x,y));
-                gray = gray < thold ? 0 : gray > 255 ? 255 : gray;
-                a = qAlpha(image->pixel(x,y));
-                newImage->setPixel(x, y, qRgba(static_cast<int>(gray), static_cast<int>(gray), static_cast<int>(gray), static_cast<int>(a)));
-            }
-        for (int i = 0; i < image->width(); ++i)
+
+        for (int i = 0; i < image->width(); ++i) {
             for (int j = 0; j < image->height(); ++j) {
                 if (i < size/2 || i > image->width() - size/2 - 1)
                     qAlpha(image->pixel(i, j)) != 255 ? newImage->setPixel(i, j, qAlpha(image->pixel(i, j))) : newImage->setPixel(i, j, 0);
                 if (j < size/2 || j > image->height() - size/2 - 1)
                     qAlpha(image->pixel(i, j)) != 255 ? newImage->setPixel(i, j, qAlpha(image->pixel(i, j))) : newImage->setPixel(i, j, 0);
             }
+        }
         delete g1;
         delete g2;
+
         if (normalize) {
             if (negative)
                 newImage->invertPixels();
@@ -322,16 +356,51 @@ QImage* diffOfGaussian(const QImage* image, double radius1, double radius2, bool
         }
         if (negative)
             newImage->invertPixels();
+
+        return newImage;
+    } else { //if is gray
+        double gray, a;
+        for (int x = size/2; x < image->width() - size/2; x++) {
+            for (int y = size/2; y < image->height() - size/2; y++) {
+                gray = qRed(g1->pixel(x,y)) - qRed(g2->pixel(x,y));
+                gray = gray < thold ? 0 : gray > 255 ? 255 : gray;
+                a = qAlpha(image->pixel(x,y));
+                newImage->setPixel(x, y, qRgba(static_cast<int>(gray), static_cast<int>(gray), static_cast<int>(gray), static_cast<int>(a)));
+            }
+        }
+        for (int i = 0; i < image->width(); ++i) {
+            for (int j = 0; j < image->height(); ++j) {
+                if (i < size/2 || i > image->width() - size/2 - 1)
+                    qAlpha(image->pixel(i, j)) != 255 ? newImage->setPixel(i, j, qAlpha(image->pixel(i, j))) : newImage->setPixel(i, j, 0);
+                if (j < size/2 || j > image->height() - size/2 - 1)
+                    qAlpha(image->pixel(i, j)) != 255 ? newImage->setPixel(i, j, qAlpha(image->pixel(i, j))) : newImage->setPixel(i, j, 0);
+            }
+        }
+        delete g1;
+        delete g2;
+
+        if (normalize) {
+            if (negative)
+                newImage->invertPixels();
+            QImage *normal = normalized(newImage);
+            delete newImage;
+
+            return normal;
+        }
+        if (negative)
+            newImage->invertPixels();
+
         return newImage;
     }
 }
 
 void makeGauss(double f[], int size, double sigma)
 {
-    for (int x = 0; x < size; x++)
+    for (int x = 0; x < size; x++) {
         for (int y = 0; y < size; y++) {
             f[x * size + y] = gauss(x, y, size, sigma);
         }
+    }
 }
 
 void makeGaussCurve(double f[], int size, double sigma)
@@ -345,71 +414,82 @@ QImage* laplace(const QImage* image, int mask, bool blur, bool negative, bool no
 {
     const int size = 3;
     double lap4[] = {
-                        0, -1,  0,
-                        -1,  4, -1,
-                        0, -1,  0
-                    };
+         0, -1,  0,
+        -1,  4, -1,
+         0, -1,  0
+    };
     double lap8[] = {
-                        -1, -1, -1,
-                        -1,  8, -1,
-                        -1, -1, -1
-                    };
+        -1, -1, -1,
+        -1,  8, -1,
+        -1, -1, -1
+    };
+
     QImage *blured;
     QImage *newImage;
-    if (blur) blured = gaussianBlur(image, 1.5);
-    else blured = new QImage(*image);
-
-    if (mask == 4)
-        if (negative) {
-            newImage = filterColorBf(blured, lap4, size);
-            newImage->invertPixels();
-            for (int i = 0; i < image->width(); ++i)
-                for (int j = 0; j < image->height(); ++j) {
-                    if (i < size/2 || i > image->width() - size/2 - 1)
-                        newImage->setPixel(i, j, 0xFFFFFFFF);
-                    if (j < size/2 || j > image->height() - size/2 - 1)
-                        newImage->setPixel(i, j, 0xFFFFFFFF);
-                }
-        } else {
-            newImage = filterColorBf(blured, lap4, size);
-            for (int i = 0; i < image->width(); ++i)
-                for (int j = 0; j < image->height(); ++j) {
-                    if (i < size/2 || i > image->width() - size/2 - 1)
-                        newImage->setPixel(i, j, 0);
-                    if (j < size/2 || j > image->height() - size/2 - 1)
-                        newImage->setPixel(i, j, 0);
-                }
-        }
+    if (blur)
+        blured = gaussianBlur(image, 1.5);
     else
+        blured = new QImage(*image);
+
+    if (mask == 4) {
+        if (negative) {
+            newImage = filterColorBf(blured, lap4, size);
+            newImage->invertPixels();
+            for (int i = 0; i < image->width(); ++i) {
+                for (int j = 0; j < image->height(); ++j) {
+                    if (i < size/2 || i > image->width() - size/2 - 1)
+                        newImage->setPixel(i, j, 0xFFFFFFFF);
+                    if (j < size/2 || j > image->height() - size/2 - 1)
+                        newImage->setPixel(i, j, 0xFFFFFFFF);
+                }
+            }
+        } else {
+            newImage = filterColorBf(blured, lap4, size);
+            for (int i = 0; i < image->width(); ++i) {
+                for (int j = 0; j < image->height(); ++j) {
+                    if (i < size/2 || i > image->width() - size/2 - 1)
+                        newImage->setPixel(i, j, 0);
+                    if (j < size/2 || j > image->height() - size/2 - 1)
+                        newImage->setPixel(i, j, 0);
+                }
+            }
+        }
+    } else {
         if (negative) {
             newImage = filterColorBf(blured, lap8, size);
             newImage->invertPixels();
-            for (int i = 0; i < image->width(); ++i)
+            for (int i = 0; i < image->width(); ++i) {
                 for (int j = 0; j < image->height(); ++j) {
                     if (i < size/2 || i > image->width() - size/2 - 1)
                         newImage->setPixel(i, j, 0xFFFFFFFF);
                     if (j < size/2 || j > image->height() - size/2 - 1)
                         newImage->setPixel(i, j, 0xFFFFFFFF);
                 }
+            }
         } else {
             newImage = filterColorBf(blured, lap8, size);
-            for (int i = 0; i < image->width(); ++i)
+            for (int i = 0; i < image->width(); ++i) {
                 for (int j = 0; j < image->height(); ++j) {
                     if (i < size/2 || i > image->width() - size/2 - 1)
                         newImage->setPixel(i, j, 0);
                     if (j < size/2 || j > image->height() - size/2 - 1)
                         newImage->setPixel(i, j, 0);
                 }
+            }
         }
+    }
     delete blured;
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
     if (normalize) {
         QImage *normal = normalized(converted);
         delete converted;
+
         return normal;
     }
+
     return converted;
 }
 
@@ -417,36 +497,41 @@ QImage* zeroCrossing(const QImage* image, bool blur, int thold)
 {
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     QImage* blured;
-    if (blur) blured = gaussianBlur(image);
-    else blured = new QImage(*image);
+    if (blur)
+        blured = gaussianBlur(image);
+    else
+        blured = new QImage(*image);
 
     int upper = 255, lower = -upper;
     quint32 tableSize = image->height() * image->width();
     qint8* lapTable = new qint8[tableSize];
-    for (quint32 i = 0; i < tableSize; i++) lapTable[i] = 0;
+    for (quint32 i = 0; i < tableSize; i++)
+        lapTable[i] = 0;
     quint8* edgeTable = new quint8[tableSize];
 
     const int size = 3;
     int f[] = {
-                  0, -1,  0,
-                  -1,  4, -1,
-                  0, -1,  0
-              };
+        0, -1,  0,
+       -1,  4, -1,
+        0, -1,  0
+    };
 
     int n = size * size, t = 0, g;
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             g = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < n ? t : t = 0;
                     g += qGray(blured->pixel(x + i, y + j)) * f[t];
                     t++;
                 }
+            }
             g = g < lower ? 0 : g >= upper ? 255 : g;
             g = g > thold || g < -thold ? g : 0;
             lapTable[x * image->height() + y] = g;
         }
+    }
 
     bool minus = false, preMinus = false;
     for (quint32 i = 0; i < tableSize; i++) {
@@ -460,52 +545,57 @@ QImage* zeroCrossing(const QImage* image, bool blur, int thold)
             edgeTable[i] = 255;
         preMinus = minus;
     }
-    for (int y = 0; y < image->height(); y++)
+
+    for (int y = 0; y < image->height(); y++) {
         for (int x = 0; x < image->width(); x++) {
             if (lapTable[x * image->height() + y] < 0)
                 minus = true;
             else
                 minus = false;
+
             if (preMinus != minus)
                 edgeTable[x * image->height() + y] = 0;
             preMinus = minus;
         }
+    }
 
-    for (int x = 0; x < image->width(); x++)
+    for (int x = 0; x < image->width(); x++) {
         for (int y = 0; y < image->height(); y++) {
             g = edgeTable[x * image->height() + y];
             newImage->setPixel(x, y, qRgba(g, g, g, qAlpha(image->pixel(x, y))));
         }
+    }
 
     delete lapTable;
     delete edgeTable;
     delete blured;
+
     return newImage;
 }
 
 void check(int x, int height, int y, int lowThold, quint8* gradient, bool *potencial, bool *checked, bool *edge)
 {
     checked[x * height + y] = true;
-    if(gradient[x * height + y] > lowThold) {
+    if (gradient[x * height + y] > lowThold) {
         edge[x * height + y] = true;
 
-        if(!checked[(x - 1) * height + y - 1] && potencial[(x - 1) * height + y - 1])
+        if (!checked[(x - 1) * height + y - 1] && potencial[(x - 1) * height + y - 1])
             check(x - 1, height, y - 1, lowThold, gradient, potencial, checked, edge);
-        if(!checked[ x      * height + y - 1] && potencial[ x      * height + y - 1])
+        if (!checked[ x      * height + y - 1] && potencial[ x      * height + y - 1])
             check(x    , height, y - 1, lowThold, gradient, potencial, checked, edge);
-        if(!checked[(x + 1) * height + y - 1] && potencial[(x + 1) * height + y - 1])
+        if (!checked[(x + 1) * height + y - 1] && potencial[(x + 1) * height + y - 1])
             check(x + 1, height, y - 1, lowThold, gradient, potencial, checked, edge);
-        if(!checked[(x - 1) * height + y    ] && potencial[(x - 1) * height + y    ])
+        if (!checked[(x - 1) * height + y    ] && potencial[(x - 1) * height + y    ])
             check(x - 1, height, y    , lowThold, gradient, potencial, checked, edge);
-//         if(!checked[ x      * height + y    ] && potencial[ x      * height + y    ])
+//         if (!checked[ x      * height + y    ] && potencial[ x      * height + y    ])
 //             check(x    , height, y    , lowThold, gradient, potencial, checked, edge);
-        if(!checked[(x + 1) * height + y    ] && potencial[(x + 1) * height + y    ])
+        if (!checked[(x + 1) * height + y    ] && potencial[(x + 1) * height + y    ])
             check(x + 1, height, y    , lowThold, gradient, potencial, checked, edge);
-        if(!checked[(x - 1) * height + y + 1] && potencial[(x - 1) * height + y + 1])
+        if (!checked[(x - 1) * height + y + 1] && potencial[(x - 1) * height + y + 1])
             check(x - 1, height, y + 1, lowThold, gradient, potencial, checked, edge);
-        if(!checked[ x      * height + y + 1] && potencial[ x      * height + y + 1])
+        if (!checked[ x      * height + y + 1] && potencial[ x      * height + y + 1])
             check(x    , height, y + 1, lowThold, gradient, potencial, checked, edge);
-        if(!checked[(x + 1) * height + y + 1] && potencial[(x + 1) * height + y + 1])
+        if (!checked[(x + 1) * height + y + 1] && potencial[(x + 1) * height + y + 1])
             check(x + 1, height, y + 1, lowThold, gradient, potencial, checked, edge);
     }
 }
@@ -523,16 +613,16 @@ QImage* canny(const QImage* image, int hiThold, int lowThold, bool blur)
     int sumX, sumY, g;
 
     int gX[] = {
-                   1,0,-1,
-                   2,0,-2,
-                   1,0,-1
-               };
+        1,0,-1,
+        2,0,-2,
+        1,0,-1
+    };
 
     int gY[] = {
-                   1, 2, 1,
-                   0, 0, 0,
-                   -1,-2,-1
-               };
+        1, 2, 1,
+        0, 0, 0,
+       -1,-2,-1
+    };
 
     int tableSize = image->height() * image->width();
     quint8* gradient = new quint8[tableSize];
@@ -549,10 +639,10 @@ QImage* canny(const QImage* image, int hiThold, int lowThold, bool blur)
 
 //     Gradient Magnitude and edge direction
     int n = size * size, t = 0;
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             sumX = sumY = 0;
-            for (int j = -size/2; j <= size/2; j++)
+            for (int j = -size/2; j <= size/2; j++) {
                 for (int i = -size/2; i <= size/2; i++) {
                     t < n ? t : t = 0;
                     g = qGray(blured->pixel(x + i, y + j));
@@ -560,58 +650,64 @@ QImage* canny(const QImage* image, int hiThold, int lowThold, bool blur)
                     sumY += g * gY[t];
                     t++;
                 }
+            }
+
             g = static_cast<int>(sqrt(sumX * sumX + sumY * sumY));
             gradient[x * image->height() + y] = g > 255 ? 255 : g;
-            if (sumY != 0) {
+            if (sumY != 0)
                 direction[x * image->height() + y] = (180 + static_cast<int>(atan2(1.0 * sumX, 1.0 * sumY) * 180.0 / 3.14159265)) % 180;
-            } else if (sumX == 0)
+            else if (sumX == 0)
                 direction[x * image->height() + y] = 0;
-            else direction[x * image->height() + y] = 90;
+            else
+                direction[x * image->height() + y] = 90;
             //qDebug("(%d, %d)\n%d  %d\n", x+1, y+1, gradientTable[x * image->height() + y], directionTable[x * image->height() + y]);
         }
+    }
 
 //     Non-maximum supression
     quint8 deg, m;
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             deg = direction[x * image->height() + y];
             m = gradient[x * image->height() + y];
-            if(deg >= 158 || deg < 23) { // 0
-                if(m > gradient[x * image->height() + y - 1] &&
-                   m > gradient[x * image->height() + y + 1])
+            if (deg >= 158 || deg < 23) { // 0
+                if (m > gradient[x * image->height() + y - 1]
+                        && m > gradient[x * image->height() + y + 1])
                     potencial[x * image->height() + y] = true;
-            } else if(deg >= 23 && deg < 68) { // 45
-                    if(m > gradient[(x - 1) * image->height() + y - 1] &&
-                       m > gradient[(x + 1) * image->height() + y + 1])
-                        potencial[x * image->height() + y] = true;
-            } else if(deg >= 68 && deg < 113) { // 90
-                        if(m > gradient[(x + 1) * image->height() + y] &&
-                           m > gradient[(x - 1) * image->height() + y])
-                            potencial[x * image->height() + y] = true;
-            } else if(deg >= 113 && deg < 158) { // 135
-                            if(m > gradient[(x + 1) * image->height() + y - 1] &&
-                               m > gradient[(x - 1) * image->height() + y + 1])
-                                potencial[x * image->height() + y] = true;
-                        }
-
+            } else if (deg >= 23 && deg < 68) { // 45
+                if (m > gradient[(x - 1) * image->height() + y - 1]
+                        && m > gradient[(x + 1) * image->height() + y + 1])
+                    potencial[x * image->height() + y] = true;
+            } else if (deg >= 68 && deg < 113) { // 90
+                if (m > gradient[(x + 1) * image->height() + y]
+                        && m > gradient[(x - 1) * image->height() + y])
+                    potencial[x * image->height() + y] = true;
+            } else if (deg >= 113 && deg < 158) { // 135
+                if (m > gradient[(x + 1) * image->height() + y - 1]
+                        && m > gradient[(x - 1) * image->height() + y + 1])
+                    potencial[x * image->height() + y] = true;
+            }
         }
+    }
 
 //     Hysteresis
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
-            if(!checked[x * image->height() + y] && potencial[x * image->height() + y] && gradient[x * image->height() + y] > hiThold) {
+            if(!checked[x * image->height() + y]
+                    && potencial[x * image->height() + y]
+                    && gradient[x * image->height() + y] > hiThold) {
                 check(x, image->height(), y, lowThold, gradient, potencial, checked, edge);
             }
         }
+    }
 
-
-
-    for (int x = 0; x < image->width(); x++)
+    for (int x = 0; x < image->width(); x++) {
         for (int y = 0; y < image->height(); y++) {
 //             g = gradient[x * image->height() + y];
             g = edge[x * image->height() + y] ? 0 : 255;
             newImage->setPixel(x, y, qRgba(g, g, g, qAlpha(image->pixel(x, y))));
         }
+    }
 
     delete gradient;
     delete direction;
@@ -619,14 +715,19 @@ QImage* canny(const QImage* image, int hiThold, int lowThold, bool blur)
     delete checked;
     delete edge;
     delete blured;
+
     return newImage;
 }
 
-QImage* filterGradientEdges(const QImage* image, int f[], int size, int thold, bool binary) {
+QImage* filterGradientEdges(const QImage* image, int f[], int size, int thold, bool binary)
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
+
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int tn = size * size, t = 0, pixel, gray;
     int *S, s, *E, e;
@@ -636,10 +737,11 @@ QImage* filterGradientEdges(const QImage* image, int f[], int size, int thold, b
         S[i] = f[i];
         E[i] = f[i + tn * 2];
     }
-    for (int x = size/2; x < image->width() - size/2; x++)
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             s = e = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < tn ? t : t = 0;
                     pixel = qGray(image->pixel(x + i, y + j));
@@ -647,30 +749,40 @@ QImage* filterGradientEdges(const QImage* image, int f[], int size, int thold, b
                     e += pixel * E[t];
                     t++;
                 }
+            }
             gray = static_cast<int>(sqrt(s * s + e * e));
             gray = gray < lower ? 0 : gray >= upper ? 255 : gray;
             newImage->setPixel(x, y, qRgb(gray, gray, gray));
         }
-    for (int i = 0; i < image->width(); ++i)
+    }
+
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
         }
+    }
+
     delete []S;
     delete []E;
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* filterColorGradientEdges(const QImage* image, int f[], int size, int thold, bool binary) {
+QImage* filterColorGradientEdges(const QImage* image, int f[], int size, int thold, bool binary)
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
+
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int tn = size * size, t = 0;
     int r, g, b;
@@ -681,10 +793,11 @@ QImage* filterColorGradientEdges(const QImage* image, int f[], int size, int tho
         S[i]  = f[i];
         E[i]  = f[i + tn * 2];
     }
-    for (int x = size/2; x < image->width() - size/2; x++)
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             rS = gS = bS = rE = gE = bE = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < tn ? t : t = 0;
                     r = qRed(image->pixel(x + i, y + j));
@@ -698,6 +811,8 @@ QImage* filterColorGradientEdges(const QImage* image, int f[], int size, int tho
                     bE  += b * E[t];
                     t++;
                 }
+            }
+
             r = static_cast<int>(sqrt(rS * rS + rE * rE));
             r = r < lower ? 0 : r >= upper ? 255 : r;
             g = static_cast<int>(sqrt(gS * gS + gE * gE));
@@ -706,27 +821,36 @@ QImage* filterColorGradientEdges(const QImage* image, int f[], int size, int tho
             b = b < lower ? 0 : b >= upper ? 255 : b;
             newImage->setPixel(x, y, qRgb(r, g, b));
         }
-    for (int i = 0; i < image->width(); ++i)
+    }
+
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
         }
+    }
     delete []S;
     delete []E;
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
 
-QImage* filterCompassEdges(const QImage* image, int f[], int size, int thold, bool binary) {
+QImage* filterCompassEdges(const QImage* image, int f[], int size, int thold, bool binary)
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
+
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int tn = size * size, t = 0, pixel, g;
     int *S, s, *SE, se, *E, e, *NE, ne;
@@ -740,7 +864,8 @@ QImage* filterCompassEdges(const QImage* image, int f[], int size, int thold, bo
         E[i] = f[i + tn * 2];
         NE[i] = f[i + tn * 3];
     }
-    for (int x = size/2; x < image->width() - size/2; x++)
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             s = se = e = ne = 0;
             for (int i = -size/2; i <= size/2; i++)
@@ -765,28 +890,37 @@ QImage* filterCompassEdges(const QImage* image, int f[], int size, int thold, bo
             g = g < lower ? 0 : g >= upper ? 255 : g;
             newImage->setPixel(x, y, qRgb(g, g, g));
         }
-    for (int i = 0; i < image->width(); ++i)
+    }
+
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
         }
+    }
     delete []S;
     delete []SE;
     delete []E;
     delete []NE;
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* filterColorCompassEdges(const QImage* image, int f[], int size, int thold, bool binary) {
+QImage* filterColorCompassEdges(const QImage* image, int f[], int size, int thold, bool binary)
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
+
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int tn = size * size, t = 0;
     int r, g, b;
@@ -801,10 +935,11 @@ QImage* filterColorCompassEdges(const QImage* image, int f[], int size, int thol
         E[i]  = f[i + tn * 2];
         NE[i] = f[i + tn * 3];
     }
-    for (int x = size/2; x < image->width() - size/2; x++)
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             rS = gS = bS = rSE = gSE = bSE = rE = gE = bE = rNE = gNE = bNE = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < tn ? t : t = 0;
                     r = qRed(image->pixel(x + i, y + j));
@@ -824,6 +959,7 @@ QImage* filterColorCompassEdges(const QImage* image, int f[], int size, int thol
                     bNE += b * NE[t];
                     t++;
                 }
+            }
             rS  *= rS;
             r = rS;
             rSE *= rSE;
@@ -856,86 +992,102 @@ QImage* filterColorCompassEdges(const QImage* image, int f[], int size, int thol
             b = b < lower ? 0 : b >= upper ? 255 : b;
             newImage->setPixel(x, y, qRgb(r, g, b));
         }
-    for (int i = 0; i < image->width(); ++i)
+    }
+
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
         }
+    }
     delete []S;
     delete []SE;
     delete []E;
     delete []NE;
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* edgesPrevitt(const QImage* image, int thold, bool binary, bool gradient) {
+QImage* edgesPrevitt(const QImage* image, int thold, bool binary, bool gradient)
+{
     int f[] = {
-                  1, 1, 1,
-                  0, 0, 0,
-                  -1,-1,-1, //S
+        1, 1, 1,
+        0, 0, 0,
+       -1,-1,-1, //S
 
-                  1, 1, 0,
-                  1, 0,-1,
-                  0,-1,-1, //SE
+        1, 1, 0,
+        1, 0,-1,
+        0,-1,-1, //SE
 
-                  1, 0,-1,
-                  1, 0,-1,
-                  1, 0,-1, //E
+        1, 0,-1,
+        1, 0,-1,
+        1, 0,-1, //E
 
-                  0,-1,-1,
-                  1, 0,-1,
-                  1, 1, 0 //NE
-              };
+        0,-1,-1,
+        1, 0,-1,
+        1, 1, 0  //NE
+    };
+
     if (image->isGrayscale()) {
-        if (gradient) return filterGradientEdges(image, f, 3, thold, binary);
+        if (gradient)
+            return filterGradientEdges(image, f, 3, thold, binary);
         return filterCompassEdges(image, f, 3, thold, binary);
     } else {
-        if (gradient) return filterColorGradientEdges(image, f, 3, thold, binary);
+        if (gradient)
+            return filterColorGradientEdges(image, f, 3, thold, binary);
         return filterColorCompassEdges(image, f, 3, thold, binary);
     }
 }
 
-QImage* edgesSobel(const QImage* image, int thold, bool binary, bool gradient) {
+QImage* edgesSobel(const QImage* image, int thold, bool binary, bool gradient)
+{
     int f[] = {
-                  1, 2, 1,
-                  0, 0, 0,
-                  -1,-2,-1, //S
+        1, 2, 1,
+        0, 0, 0,
+       -1,-2,-1, //S
 
-                  2, 1, 0,
-                  1, 0,-1,
-                  0,-1,-2, //SE
+        2, 1, 0,
+        1, 0,-1,
+        0,-1,-2, //SE
 
-                  1, 0,-1,
-                  2, 0,-2,
-                  1, 0,-1, //E
+        1, 0,-1,
+        2, 0,-2,
+        1, 0,-1, //E
 
-                  0,-1,-2,
-                  1, 0,-1,
-                  2, 1, 0 //NE
-              };
+        0,-1,-2,
+        1, 0,-1,
+        2, 1, 0  //NE
+    };
+
     if (image->isGrayscale()) {
-        if (gradient) return filterGradientEdges(image, f, 3, thold, binary);
+        if (gradient)
+            return filterGradientEdges(image, f, 3, thold, binary);
         return filterCompassEdges(image, f, 3, thold, binary);
     } else {
-        if (gradient) return filterColorGradientEdges(image, f, 3, thold, binary);
+        if (gradient)
+            return filterColorGradientEdges(image, f, 3, thold, binary);
         return filterColorCompassEdges(image, f, 3, thold, binary);
     }
 }
 
-QImage* edgesRoberts(const QImage* image, int thold, bool binary) {
+QImage* edgesRoberts(const QImage* image, int thold, bool binary)
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int r, g, b;
     int rGx, rGy, gGx, gGy, bGx, bGy;
-    for (int x = 0; x < image->width() - 2; x++)
+    for (int x = 0; x < image->width() - 2; x++) {
         for (int y = 0; y < image->height() - 2; y++) {
             r = g = b = 0;
             rGx = qRed(image->pixel(x, y)) - qRed(image->pixel(x + 1, y + 1));
@@ -952,21 +1104,28 @@ QImage* edgesRoberts(const QImage* image, int thold, bool binary) {
             b = b < lower ? 0 : b >= upper ? 255 : b;
             newImage->setPixel(x, y, qRgb(r, g, b));
         }
+    }
+
     for (int i = 0; i < image->width(); ++i)
         newImage->setPixel(i, image->height() - 1, 0);
     for (int j = 0; j < image->height(); ++j)
         newImage->setPixel(image->width() - 1, j, 0);
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* filterCompass8Edges(const QImage* image, int f[], int size, int thold, bool binary) {
+QImage* filterCompass8Edges(const QImage* image, int f[], int size, int thold, bool binary) 
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int tn = size * size, t = 0, pixel, g;
     int *S, s, *SE, se, *E, e, *NE, ne, *N, n, *NW, nw, *W, w, *SW, sw;
@@ -988,10 +1147,10 @@ QImage* filterCompass8Edges(const QImage* image, int f[], int size, int thold, b
         W[i]  = f[i + tn * 6];
         SW[i] = f[i + tn * 7];
     }
-    for (int x = size/2; x < image->width() - size/2; x++)
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             s = se = e = ne = n = nw = w = sw = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < tn ? t : t = 0;
                     pixel = qGray(image->pixel(x + i, y + j));
@@ -1005,6 +1164,7 @@ QImage* filterCompass8Edges(const QImage* image, int f[], int size, int thold, b
                     sw += pixel * SW[t];
                     t++;
                 }
+            }
             s  *= s;
             g = s;
             se *= se;
@@ -1025,13 +1185,16 @@ QImage* filterCompass8Edges(const QImage* image, int f[], int size, int thold, b
             g = g < lower ? 0 : g >= upper ? 255 : g;
             newImage->setPixel(x, y, qRgb(g, g, g));
         }
-    for (int i = 0; i < image->width(); ++i)
+    }
+
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
         }
+    }
     delete []S;
     delete []SE;
     delete []E;
@@ -1040,17 +1203,23 @@ QImage* filterCompass8Edges(const QImage* image, int f[], int size, int thold, b
     delete []NW;
     delete []W;
     delete []SW;
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* filterColorCompass8Edges(const QImage* image, int f[], int size, int thold, bool binary) {
+QImage* filterColorCompass8Edges(const QImage* image, int f[], int size, int thold, bool binary)
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
+
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int tn = size * size, t = 0;
     int r, g, b;
@@ -1074,11 +1243,12 @@ QImage* filterColorCompass8Edges(const QImage* image, int f[], int size, int tho
         W[i]  = f[i + tn * 6];
         SW[i] = f[i + tn * 7];
     }
-    for (int x = size/2; x < image->width() - size/2; x++)
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             rS = gS = bS = rSE = gSE = bSE = rE = gE = bE = rNE = gNE = bNE = 0;
             rN = gN = bN = rNW = gNW = bNW = rW = gW = bW = rSW = gSW = bSW = 0;
-            for (int i = -size/2; i <= size/2; i++)
+            for (int i = -size/2; i <= size/2; i++) {
                 for (int j = -size/2; j<=size/2; j++) {
                     t < tn ? t : t = 0;
                     r = qRed(image->pixel(x + i, y + j));
@@ -1110,6 +1280,8 @@ QImage* filterColorCompass8Edges(const QImage* image, int f[], int size, int tho
                     bSW += b * SW[t];
                     t++;
                 }
+            }
+
             rS  *= rS;
             r = rS;
             rSE *= rSE;
@@ -1166,13 +1338,16 @@ QImage* filterColorCompass8Edges(const QImage* image, int f[], int size, int tho
             b = b < lower ? 0 : b >= upper ? 255 : b;
             newImage->setPixel(x, y, qRgb(r, g, b));
         }
-    for (int i = 0; i < image->width(); ++i)
+    }
+
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
         }
+    }
     delete []S;
     delete []SE;
     delete []E;
@@ -1181,97 +1356,111 @@ QImage* filterColorCompass8Edges(const QImage* image, int f[], int size, int tho
     delete []NW;
     delete []W;
     delete []SW;
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* edgesRobinson(const QImage* image, int thold, bool binary) {
+QImage* edgesRobinson(const QImage* image, int thold, bool binary)
+{
     int f[] = {
-                  1, 1, 1,
-                  1,-2, 1,
-                  -1,-1,-1, //S
+        1, 1, 1,
+        1,-2, 1,
+       -1,-1,-1, //S
 
-                  1, 1, 1,
-                  1,-2,-1,
-                  1,-1,-1, //SE
+        1, 1, 1,
+        1,-2,-1,
+        1,-1,-1, //SE
 
-                  1, 1,-1,
-                  1,-2,-1,
-                  1, 1,-1, //E
+        1, 1,-1,
+        1,-2,-1,
+        1, 1,-1, //E
 
-                  1,-1,-1,
-                  1,-2,-1,
-                  1, 1, 1, //NE
+        1,-1,-1,
+        1,-2,-1,
+        1, 1, 1, //NE
 
-                  -1,-1,-1,
-                  1, -2, 1,
-                  1, 1, 1, //N
+       -1,-1,-1,
+        1, -2, 1,
+        1, 1, 1, //N
 
-                  -1,-1, 1,
-                  -1,-2, 1,
-                  1, 1, 1, //NW
+       -1,-1, 1,
+       -1,-2, 1,
+        1, 1, 1, //NW
 
-                  -1, 1, 1,
-                  -1,-2, 1,
-                  -1, 1, 1, //W
+       -1, 1, 1,
+       -1,-2, 1,
+       -1, 1, 1, //W
 
-                  1, 1, 1,
-                  -1,-2, 1,
-                  -1,-1, 1 //SW
-              };
-    if (image->isGrayscale()) return filterCompass8Edges(image, f, 3, thold, binary);
-    else return filterColorCompass8Edges(image, f, 3, thold, binary);
+        1, 1, 1,
+       -1,-2, 1,
+       -1,-1, 1 //SW
+    };
+
+    if (image->isGrayscale())
+        return filterCompass8Edges(image, f, 3, thold, binary);
+    else
+        return filterColorCompass8Edges(image, f, 3, thold, binary);
 }
 
-QImage* edgesKirsch(const QImage* image, int thold, bool binary) {
+QImage* edgesKirsch(const QImage* image, int thold, bool binary)
+{
     int f[] = {
-                  3, 3, 3,
-                  3, 0, 3,
-                  -5,-5,-5, //S
+        3, 3, 3,
+        3, 0, 3,
+       -5,-5,-5, //S
 
-                  3, 3, 3,
-                  3, 0,-5,
-                  3,-5,-5, //SE
+        3, 3, 3,
+        3, 0,-5,
+        3,-5,-5, //SE
 
-                  3, 3,-5,
-                  3, 0,-5,
-                  3, 3,-5, //E
+        3, 3,-5,
+        3, 0,-5,
+        3, 3,-5, //E
 
-                  3,-5,-5,
-                  3, 0,-5,
-                  3, 3, 3, //NE
+        3,-5,-5,
+        3, 0,-5,
+        3, 3, 3, //NE
 
-                  -5,-5,-5,
-                  3,  0, 3,
-                  3, 3, 3, //N
+       -5,-5,-5,
+        3,  0, 3,
+        3, 3, 3, //N
 
-                  -5,-5, 3,
-                  -5, 0, 3,
-                  3, 3, 3, //NW
+       -5,-5, 3,
+       -5, 0, 3,
+        3, 3, 3, //NW
 
-                  -5, 3, 3,
-                  -5, 0, 3,
-                  -5, 3, 3, //W
+       -5, 3, 3,
+       -5, 0, 3,
+       -5, 3, 3, //W
 
-                  3, 3, 3,
-                  -5, 0, 3,
-                  -5,-5, 3 //SW
-              };
-    if (image->isGrayscale()) return filterCompass8Edges(image, f, 3, thold, binary);
-    else return filterColorCompass8Edges(image, f, 3, thold, binary);
+        3, 3, 3,
+       -5, 0, 3,
+       -5,-5, 3 //SW
+    };
+
+    if (image->isGrayscale())
+        return filterCompass8Edges(image, f, 3, thold, binary);
+    else
+        return filterColorCompass8Edges(image, f, 3, thold, binary);
 }
 
-QImage* edgesDiff(const QImage* image, int thold, bool binary) {
+QImage* edgesDiff(const QImage* image, int thold, bool binary)
+{
     int lower, upper;
     lower = thold;
-    if (binary) upper = lower;
-    else upper = 255;
+    if (binary)
+        upper = lower;
+    else
+        upper = 255;
+
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int r, g, b;
     int Gx, Gy, Gv, Gz;
-    for (int x = 0; x < image->width() - 2; x++)
+    for (int x = 0; x < image->width() - 2; x++) {
         for (int y = 1; y < image->height() - 2; y++) {
             Gx = qRed(image->pixel(x, y)) - qRed(image->pixel(x,     y - 1));
             Gv = qRed(image->pixel(x, y)) - qRed(image->pixel(x + 1, y - 1));
@@ -1320,34 +1509,51 @@ QImage* edgesDiff(const QImage* image, int thold, bool binary) {
 
             newImage->setPixel(x, y, qRgb(r, g, b));
         }
+    }
+
     for (int i = 0; i < image->width(); ++i) {
         newImage->setPixel(i, image->height() - 1, 0);
         newImage->setPixel(i, 0, 0);
     }
+
     for (int j = 0; j < image->height(); ++j)
         newImage->setPixel(image->width() - 1, j, 0);
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* edges(const QImage* image, QString filter, int thold, bool blur, bool negative, bool binary) {
+QImage* edges(const QImage* image, QString filter, int thold, bool blur, bool negative, bool binary)
+{
     QImage* blured;
     QImage* newImage;
 
-    if (blur) blured = gaussianBlur(image, 1.5);
-    else blured = new QImage(*image);
+    if (blur)
+        blured = gaussianBlur(image, 1.5);
+    else
+        blured = new QImage(*image);
 
-    if (filter == "Sobel (compass)") newImage = edgesSobel(blured, thold, binary, false);
-    else if (filter == "Previtt (compass)") newImage = edgesPrevitt(blured, thold, binary, false);
-    else if (filter == "Robinson") newImage =  edgesRobinson(blured, thold, binary);
-    else if (filter == "Kirsch") newImage =  edgesKirsch(blured, thold, binary);
-    else if (filter == "Differential") newImage = edgesDiff(blured, thold, binary);
-    else if (filter == "Sobel (gradient)") newImage = edgesSobel(blured, thold, binary, true);
-    else if (filter == "Previtt (gradient)") newImage = edgesPrevitt(blured, thold, binary, true);
-    else if (filter == "Roberts") newImage = edgesRoberts(blured, thold, binary);
-    else newImage = new QImage(*image);
+    if (filter == "Sobel (compass)")
+        newImage = edgesSobel(blured, thold, binary, false);
+    else if (filter == "Previtt (compass)")
+        newImage = edgesPrevitt(blured, thold, binary, false);
+    else if (filter == "Robinson")
+        newImage =  edgesRobinson(blured, thold, binary);
+    else if (filter == "Kirsch")
+        newImage =  edgesKirsch(blured, thold, binary);
+    else if (filter == "Differential")
+        newImage = edgesDiff(blured, thold, binary);
+    else if (filter == "Sobel (gradient)")
+        newImage = edgesSobel(blured, thold, binary, true);
+    else if (filter == "Previtt (gradient)")
+        newImage = edgesPrevitt(blured, thold, binary, true);
+    else if (filter == "Roberts")
+        newImage = edgesRoberts(blured, thold, binary);
+    else
+        newImage = new QImage(*image);
 
     delete blured;
 //     if (negative) {
@@ -1355,20 +1561,28 @@ QImage* edges(const QImage* image, QString filter, int thold, bool blur, bool ne
 //         delete newImage;
 //         return negated;
 //     }
-    if (negative) newImage->invertPixels();
+    if (negative)
+        newImage->invertPixels();
+
     return newImage;
 }
 
-QImage* filter(const QImage* image, double f[], int rows, int cols) {
+QImage* filter(const QImage* image, double f[], int rows, int cols)
+{
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int n = rows * cols, t = 0;
     double div = 0, r, g, b;
-    for (int i = 0; i < n; i++) div += f[i];
-    if (div != 0) for (int i = 0; i < n; i++) f[i] /= div;
-    for (int x = cols/2; x < image->width() - cols/2; x++)
+    for (int i = 0; i < n; i++)
+        div += f[i];
+    if (div != 0) {
+        for (int i = 0; i < n; i++)
+            f[i] /= div;
+    }
+
+    for (int x = cols/2; x < image->width() - cols/2; x++) {
         for (int y = rows/2; y < image->height() - rows/2; y++) {
             r = g = b = 0;
-            for (int j = -rows/2; j<=rows/2; j++)
+            for (int j = -rows/2; j<=rows/2; j++) {
                 for (int i = -cols/2; i <= cols/2; i++) {
                     t < n ? t : t = 0;
                     r += qRed(image->pixel(x + i, y + j)) * f[t];
@@ -1376,34 +1590,46 @@ QImage* filter(const QImage* image, double f[], int rows, int cols) {
                     b += qBlue(image->pixel(x + i, y + j)) * f[t];
                     t++;
                 }
+            }
             r = r < 0 ? 0 : r > 255 ? 255 : r;
             g = g < 0 ? 0 : g > 255 ? 255 : g;
             b = b < 0 ? 0 : b > 255 ? 255 : b;
             newImage->setPixel(x, y, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
         }
+    }
     delete []f;
+
     return newImage;
 }
 
-bool isBinary(const QImage* image) {
-    int r;
-    if (image->isGrayscale())
-        for (int x = 0; x < image->width(); x++)
+bool isBinary(const QImage* image)
+{
+    if (image->isGrayscale()) {
+        for (int x = 0; x < image->width(); x++) {
             for (int y = 0; y < image->height(); y++) {
-                r = qRed(image->pixel(x, y));
+                int r = qRed(image->pixel(x, y));
                 if (r != 0 && r != 255)
                     return false;
             }
-    else return false;
+        }
+    } else {
+        return false;
+    }
+
     return true;
 }
 
-QImage* filterBinary(const QImage* image, int f[], int size, bool keep) {
+QImage* filterBinary(const QImage* image, int f[], int size, bool keep)
+{
     QImage* newImage = new QImage(*image);
-    if (!keep)
-        for (int x = 0; x < image->width(); x++)
-            for (int y = 0; y < image->height(); y++)
+    if (!keep) {
+        for (int x = 0; x < image->width(); x++) {
+            for (int y = 0; y < image->height(); y++) {
                 newImage->setPixel(x, y, qRgb(255, 255, 255));
+            }
+        }
+    }
+
     int tn = size * size, t = 0, r;
     bool s, se, e, ne, n, nw, w, sw;
     int *S, *SE, *E, *NE, *N, *NW, *W, *SW;
@@ -1425,7 +1651,8 @@ QImage* filterBinary(const QImage* image, int f[], int size, bool keep) {
         W[i]  = f[i + tn * 6];
         SW[i] = f[i + tn * 7];
     }
-    for (int x = size/2; x < image->width() - size/2; x++)
+
+    for (int x = size/2; x < image->width() - size/2; x++) {
         for (int y = size/2; y < image->height() - size/2; y++) {
             s = se = e = ne = n = nw = w = sw = true;
             t = 0;
@@ -1433,28 +1660,40 @@ QImage* filterBinary(const QImage* image, int f[], int size, bool keep) {
                 for (int i = -size/2; i <= size/2; i++) {
                     t < tn ? t : t = 0;
                     r = qRed(image->pixel(x + i, y + j));
-                    if (S[t] != 128) if (S[t] != r) s = false;
-                    if (SE[t] != 128) if (SE[t] != r) se = false;
-                    if (E[t] != 128) if (E[t] != r) e = false;
-                    if (NE[t] != 128) if (NE[t] != r) ne = false;
-                    if (N[t] != 128) if (N[t] != r) n = false;
-                    if (NW[t] != 128) if (NW[t] != r) nw = false;
-                    if (W[t] != 128) if (W[t] != r) w = false;
-                    if (SW[t] != 128) if (SW[t] != r) sw = false;
+                    if (S[t] != 128 && S[t] != r)
+                        s = false;
+                    if (SE[t] != 128 && SE[t] != r)
+                        se = false;
+                    if (E[t] != 128 && E[t] != r)
+                        e = false;
+                    if (NE[t] != 128 && NE[t] != r)
+                        ne = false;
+                    if (N[t] != 128 && N[t] != r)
+                        n = false;
+                    if (NW[t] != 128 && NW[t] != r)
+                        nw = false;
+                    if (W[t] != 128 && W[t] != r)
+                        w = false;
+                    if (SW[t] != 128 && SW[t] != r)
+                        sw = false;
                     t++;
                 }
-                if (!(s || se || e || ne || n || nw || w || sw)) break;
+                if (!(s || se || e || ne || n || nw || w || sw))
+                    break;
             }
-            if (s || se || e || ne || n || nw || w || sw) newImage->setPixel(x, y, qRgb(0, 0, 0));
+            if (s || se || e || ne || n || nw || w || sw)
+                newImage->setPixel(x, y, qRgb(0, 0, 0));
         }
+    }
 
-    for (int i = 0; i < image->width(); ++i)
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
         }
+    }
     delete []S;
     delete []SE;
     delete []E;
@@ -1463,86 +1702,90 @@ QImage* filterBinary(const QImage* image, int f[], int size, bool keep) {
     delete []NW;
     delete []W;
     delete []SW;
+
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
     delete newImage;
+
     return converted;
 }
 
-QImage* completeLines(const QImage* image) {
+QImage* completeLines(const QImage* image)
+{
     QImage* newImage;
     int f[] = {
-                  255, 0, 255,
-                  255, 255, 255,
-                  255, 0, 255, //S
+        255,   0, 255,
+        255, 255, 255,
+        255,   0, 255, //S
 
-                  255, 255, 255,
-                  0, 255, 0,
-                  255, 255, 255, //SE
+        255, 255, 255,
+          0, 255,   0,
+        255, 255, 255, //SE
 
-                  0, 255, 255,
-                  255, 255, 255,
-                  255, 0, 255, //E
+          0, 255, 255,
+        255, 255, 255,
+        255,   0, 255, //E
 
-                  255, 255, 0,
-                  0, 255, 255,
-                  255, 255, 255, //NE
+        255, 255,   0,
+          0, 255, 255,
+        255, 255, 255, //NE
 
-                  255, 0, 255,
-                  255, 255, 255,
-                  255, 255, 0, //N
+        255,   0, 255,
+        255, 255, 255,
+        255, 255,   0, //N
 
-                  255, 255, 255,
-                  255, 255, 0,
-                  0, 255, 255, //NW
+        255, 255, 255,
+        255, 255,   0,
+          0, 255, 255, //NW
 
-                  0, 255, 255,
-                  255, 255, 255,
-                  255, 255, 0, //W
+          0, 255, 255,
+        255, 255, 255,
+        255, 255,   0, //W
 
-                  255, 255, 0,
-                  255, 255, 255,
-                  0, 255, 255 //SW
-              };
+        255, 255,   0,
+        255, 255, 255,
+          0, 255, 255  //SW
+    };
     newImage = filterBinary(image, f, 3, true);
     return newImage;
 }
 
-QImage* thinnerLines(const QImage* image) {
+QImage* thinnerLines(const QImage* image)
+{
     QImage* newImage;
     int f[] = {
-                  0, 128, 255,
-                  0, 0, 255,
-                  128, 255, 255, //S
+          0, 128, 255,
+          0,   0, 255,
+        128, 255, 255, //S
 
-                  128, 0, 0,
-                  255, 0, 128,
-                  255, 255, 255, //SE
+        128,   0,   0,
+        255,   0, 128,
+        255, 255, 255, //SE
 
-                  128, 0, 128,
-                  0, 0, 128,
-                  128, 128, 255, //E
+        128,   0, 128,
+          0,   0, 128,
+        128, 128, 255, //E
 
-                  128, 0, 128,
-                  128, 0, 255,
-                  255, 128, 255, //NE
+        128,   0, 128,
+        128,   0, 255,
+        255, 128, 255, //NE
 
-                  255, 255, 255,
-                  128, 0, 255,
-                  0, 0, 128, //N
+        255, 255, 255,
+        128,   0, 255,
+          0,   0, 128, //N
 
-                  255, 255, 128,
-                  255, 0, 0,
-                  255, 128, 0, //NW
+        255, 255, 128,
+        255,   0,   0,
+        255, 128,   0, //NW
 
-                  128, 128, 255,
-                  0, 0, 128,
-                  128, 0, 128, //W
+        128, 128, 255,
+          0,   0, 128,
+        128,   0, 128, //W
 
-                  255, 128, 128,
-                  128, 0, 0,
-                  128, 0, 128 //SW
-              };
+        255, 128, 128,
+        128,   0,   0,
+        128,   0, 128  //SW
+    };
     newImage = filterBinary(image, f, 3, false);
     return newImage;
 }

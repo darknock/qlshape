@@ -20,7 +20,11 @@
 
 #include <about.h>
 
-AboutQLShape::AboutQLShape(QWidget * parent, Qt::WindowFlags f) {
+AboutQLShape::AboutQLShape(QWidget * parent, Qt::WindowFlags f)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(f)
+
     ui.setupUi(this);
     ui.label->setPixmap(QPixmap(QString::fromUtf8(":images/qlshape.png")));
     ui.pushButton->setIcon(QIcon(QString::fromUtf8(":images/fileclose.png")));

@@ -1,6 +1,7 @@
 TEMPLATE = app
 TARGET = qlshape
 QT += widgets printsupport
+CONFIG += c++11
 
 DEPENDPATH += . src
 INCLUDEPATH += . src
@@ -25,6 +26,7 @@ HEADERS += src/qlshape.h \
            src/net/hamming.h  \
            src/aieffects.h \
            src/aiselector.h
+
 FORMS += src/dogselector.ui \
          src/edgeselector.ui \
          src/filterselector.ui \
@@ -34,6 +36,7 @@ FORMS += src/dogselector.ui \
          src/gaussselector.ui \
          src/cannyselector.ui \
          src/aiselector.ui
+
 SOURCES += src/qlshape.cpp \
            src/dogselector.cpp \
            src/edgeselector.cpp \
@@ -53,14 +56,23 @@ SOURCES += src/qlshape.cpp \
            src/net/pattern.cpp \
            src/aieffects.cpp \
            src/aiselector.cpp
+
 TRANSLATIONS += locale/qlshape_pl.ts \
                 locale/qlshape_tr.ts \
                 locale/qlshape_it.ts \
                 locale/qlshape_sv.ts \
                 locale/qlshape_ro.ts \
-                locale/qlshape_fr.ts 
+                locale/qlshape_fr.ts
+
 RESOURCES += src/application.qrc
 #Windows icon
-RC_FILE = qlshape.rc 
+RC_FILE = qlshape.rc
 #Mac icon
 ICON = qlshape.icns
+
+macx {
+    FILTERS.files = data
+    FILTERS.path = Contents/Resources
+
+    QMAKE_BUNDLE_DATA += FILTERS
+}

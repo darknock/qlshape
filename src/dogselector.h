@@ -25,7 +25,8 @@
 
 using namespace Ui;
 
-class DogSelector:public QDialog {
+class DogSelector : public QDialog
+{
     Q_OBJECT
 
 public:

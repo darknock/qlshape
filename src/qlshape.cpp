@@ -86,7 +86,8 @@ QLShape::QLShape()
 }
 
 /**************************** Effects *****************************/
-void QLShape::enableEffects() {
+void QLShape::enableEffects()
+{
     bool null = curImage->isNull();
     bool binary = isBinary(curImage);
     toGrayscaleAct->setEnabled(!curImage->isGrayscale());
@@ -105,7 +106,8 @@ void QLShape::enableEffects() {
     aiEdgesAct->setEnabled(!null);
 }
 
-void QLShape::toGrayscale() {
+void QLShape::toGrayscale()
+{
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
@@ -116,7 +118,8 @@ void QLShape::toGrayscale() {
     QApplication::restoreOverrideCursor();
 }
 
-void QLShape::toMonochromatic() {
+void QLShape::toMonochromatic()
+{
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
@@ -127,7 +130,8 @@ void QLShape::toMonochromatic() {
     QApplication::restoreOverrideCursor();
 }
 
-void QLShape::negative() {
+void QLShape::negative()
+{
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
@@ -138,7 +142,8 @@ void QLShape::negative() {
     QApplication::restoreOverrideCursor();
 }
 
-void QLShape::normalize() {
+void QLShape::normalize()
+{
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
@@ -149,7 +154,8 @@ void QLShape::normalize() {
     QApplication::restoreOverrideCursor();
 }
 
-void QLShape::filterSelect() {
+void QLShape::filterSelect()
+{
     if (filterSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QTime t;
@@ -161,7 +167,8 @@ void QLShape::filterSelect() {
     }
 }
 
-void QLShape::filterGauss() {
+void QLShape::filterGauss()
+{
     gaussSelector->setPreview(curImage);
     if (gaussSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -175,7 +182,8 @@ void QLShape::filterGauss() {
     }
 }
 
-void QLShape::filterEdges() {
+void QLShape::filterEdges()
+{
     edgeSelector->setPreview(curImage);
     if (edgeSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -188,7 +196,8 @@ void QLShape::filterEdges() {
     }
 }
 
-void QLShape::filterLaplace() {
+void QLShape::filterLaplace()
+{
     lapSelector->setPreview(curImage);
     if (lapSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -202,7 +211,8 @@ void QLShape::filterLaplace() {
     }
 }
 
-void QLShape::filterDog() {
+void QLShape::filterDog()
+{
     dogSelector->setPreview(curImage);
     if (dogSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -216,7 +226,8 @@ void QLShape::filterDog() {
     }
 }
 
-void QLShape::filterZero() {
+void QLShape::filterZero()
+{
     zeroSelector->setPreview(curImage);
     if (zeroSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -230,7 +241,8 @@ void QLShape::filterZero() {
     }
 }
 
-void QLShape::filterCanny() {
+void QLShape::filterCanny()
+{
     cannySelector->setPreview(curImage);
     if (cannySelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -244,7 +256,8 @@ void QLShape::filterCanny() {
     }
 }
 
-void QLShape::aiEdges() {
+void QLShape::aiEdges()
+{
     aiSelector->setPreview(curImage);
     if (aiSelector->exec()) {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -259,7 +272,8 @@ void QLShape::aiEdges() {
 }
 
 
-void QLShape::fillLines() {
+void QLShape::fillLines()
+{
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
@@ -270,7 +284,8 @@ void QLShape::fillLines() {
     QApplication::restoreOverrideCursor();
 }
 
-void QLShape::thinLines() {
+void QLShape::thinLines()
+{
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QTime t;
     t.start();
@@ -282,8 +297,10 @@ void QLShape::thinLines() {
 }
 
 /**************************** History *****************************/
-void QLShape::setCurrentImage(QImage *i) {
-    if(curImage != i) delete curImage;
+void QLShape::setCurrentImage(QImage *i)
+{
+    if(curImage != i)
+        delete curImage;
     curImage = i;
     imageLabel->setPixmap(QPixmap::fromImage(*curImage));
     imageLabel->adjustSize();
@@ -292,7 +309,8 @@ void QLShape::setCurrentImage(QImage *i) {
     fitToWindow();
 }
 
-void QLShape::updateImage(QImage *i, QString dscr) {
+void QLShape::updateImage(QImage *i, QString dscr)
+{
     setCurrentImage(i);
     undoAct->setEnabled(true);
     redoAct->setEnabled(false);
@@ -302,36 +320,44 @@ void QLShape::updateImage(QImage *i, QString dscr) {
     documentWasModified();
 }
 
-void QLShape::undo() {
+void QLShape::undo()
+{
     history->undo();
     undoAct->setEnabled(history->hasPrevious());
     redoAct->setEnabled(true);
 
-    if (history->hasPrevious()) undoAct->setStatusTip(tr("Cancel %1").arg(history->peekPreviousDscr()));
-    else {
+    if (history->hasPrevious()) {
+        undoAct->setStatusTip(tr("Cancel %1").arg(history->peekPreviousDscr()));
+    } else {
         undoAct->setStatusTip("");
         statusBar()->clearMessage();
     }
-    if (history->hasNext()) redoAct->setStatusTip(tr("Repeat %1").arg(history->peekNextDscr()));
-    else {
+
+    if (history->hasNext()) {
+        redoAct->setStatusTip(tr("Repeat %1").arg(history->peekNextDscr()));
+    } else {
         redoAct->setStatusTip("");
         statusBar()->clearMessage();
     }
     documentWasModified();
 }
 
-void QLShape::redo() {
+void QLShape::redo()
+{
     history->redo();
     redoAct->setEnabled(history->hasNext());
     undoAct->setEnabled(true);
 
-    if (history->hasPrevious()) undoAct->setStatusTip(tr("Cancel %1").arg(history->peekPreviousDscr()));
-    else {
+    if (history->hasPrevious()) {
+        undoAct->setStatusTip(tr("Cancel %1").arg(history->peekPreviousDscr()));
+    } else {
         undoAct->setStatusTip("");
         statusBar()->clearMessage();
     }
-    if (history->hasNext()) redoAct->setStatusTip(tr("Repeat %1").arg(history->peekNextDscr()));
-    else {
+
+    if (history->hasNext()) {
+        redoAct->setStatusTip(tr("Repeat %1").arg(history->peekNextDscr()));
+    } else {
         redoAct->setStatusTip("");
         statusBar()->clearMessage();
     }
@@ -339,7 +365,8 @@ void QLShape::redo() {
 }
 
 /***************************** Files ******************************/
-void QLShape::setCurrentFile(const QString &fileName) {
+void QLShape::setCurrentFile(const QString &fileName)
+{
     curFile = fileName;
     setWindowModified(false);
 
@@ -349,14 +376,16 @@ void QLShape::setCurrentFile(const QString &fileName) {
     else
         shownName = strippedName(curFile);
 
-    setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("darknocK")));
+    setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("QLShape")));
 }
 
-QString QLShape::strippedName(const QString &fullFileName) {
+QString QLShape::strippedName(const QString &fullFileName)
+{
     return QFileInfo(fullFileName).fileName();
 }
 
-void QLShape::closeEvent(QCloseEvent *event) {
+void QLShape::closeEvent(QCloseEvent *event)
+{
     if (maybeSave()) {
         writeSettings();
         filterSelector->saveData();
@@ -366,7 +395,8 @@ void QLShape::closeEvent(QCloseEvent *event) {
     }
 }
 
-void QLShape::open() {
+void QLShape::open()
+{
     if (maybeSave()) {
         QImage *tempImage = curImage;
         QString fileName = QFileDialog::getOpenFileName(this,
@@ -374,7 +404,7 @@ void QLShape::open() {
         if (!fileName.isEmpty()) {
             curImage = new QImage(fileName);
             if (curImage->isNull()) {
-                QMessageBox::information(this, tr("darknocK"), tr("Cannot load %1.").arg(fileName));
+                QMessageBox::information(this, tr("QLShape"), tr("Cannot load %1.").arg(fileName));
                 curImage = tempImage;
                 return;
             }
@@ -387,7 +417,8 @@ void QLShape::open() {
 
             imageLabel->setPixmap(QPixmap::fromImage(*curImage));
             setCurrentFile(fileName);
-            if (fitToWindowAct->isChecked()) fitToWindow();
+            if (fitToWindowAct->isChecked())
+                fitToWindow();
             scaleFactor = 1.0;
 
             saveAsAct->setEnabled(true);
@@ -402,11 +433,12 @@ void QLShape::open() {
     }
 }
 
-void QLShape::preOpen(QString fileName) {
+void QLShape::preOpen(QString fileName)
+{
     if (!fileName.isEmpty()) {
         curImage = new QImage(fileName);
         if (curImage->isNull()) {
-            QMessageBox::information(this, tr("darknocK"), tr("Cannot load %1.").arg(fileName));
+            QMessageBox::information(this, tr("QLShape"), tr("Cannot load %1.").arg(fileName));
             return;
         }
         curImageFormat = curImage->format();
@@ -417,7 +449,8 @@ void QLShape::preOpen(QString fileName) {
 
         imageLabel->setPixmap(QPixmap::fromImage(*curImage));
         setCurrentFile(fileName);
-        if (fitToWindowAct->isChecked()) fitToWindow();
+        if (fitToWindowAct->isChecked())
+            fitToWindow();
         scaleFactor = 1.0;
 
         saveAsAct->setEnabled(true);
@@ -431,15 +464,16 @@ void QLShape::preOpen(QString fileName) {
     }
 }
 
-bool QLShape::save() {
-    if (curFile.isEmpty()) {
+bool QLShape::save()
+{
+    if (curFile.isEmpty())
         return saveAs();
-    } else {
+    else
         return saveFile(curFile);
-    }
 }
 
-bool QLShape::saveAs() {
+bool QLShape::saveAs()
+{
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                        curFile, tr("Portable Networks Graphics (*.png);;XPixMap (*.xpm);;JPEG (*.jpg);;Windows Bitmap (*.bmp)"));
     if (fileName.isEmpty())
@@ -448,10 +482,11 @@ bool QLShape::saveAs() {
     return saveFile(fileName);
 }
 
-bool QLShape::maybeSave() {
+bool QLShape::maybeSave()
+{
     if (isWindowModified()) {
         QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("darknocK"),
+        ret = QMessageBox::warning(this, tr("QLShape"),
                                    tr("Image has been modified.\n"
                                       "Do you want to save your changes?"),
                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -463,10 +498,11 @@ bool QLShape::maybeSave() {
     return true;
 }
 
-bool QLShape::saveFile(const QString &fileName) {
+bool QLShape::saveFile(const QString &fileName)
+{
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("darknocK"),
+        QMessageBox::warning(this, tr("QLShape"),
                              tr("Cannot write file %1:\n%2.")
                              .arg(fileName)
                              .arg(file.errorString()));
@@ -485,10 +521,12 @@ bool QLShape::saveFile(const QString &fileName) {
 
     setCurrentFile(fileName);
     statusBar()->showMessage(tr("File saved"), 2000);
+
     return true;
 }
 
-void QLShape::print() {
+void QLShape::print()
+{
     Q_ASSERT(imageLabel->pixmap());
     QPrintDialog dialog(&printer, this);
     if (dialog.exec()) {
@@ -502,14 +540,16 @@ void QLShape::print() {
     }
 }
 
-void QLShape::documentWasModified() {
+void QLShape::documentWasModified()
+{
     setWindowModified(true);
     saveAct->setEnabled(true);
     enableEffects();
 }
 
 /*************************** Resizeing ****************************/
-void QLShape::updateActions() {
+void QLShape::updateActions()
+{
     if (!curImage->isNull()) {
         zoomInAct->setEnabled(!fitToWindowAct->isChecked() && scaleFactor < 3.0);
         zoomOutAct->setEnabled(!fitToWindowAct->isChecked() && scaleFactor > 0.333);
@@ -517,7 +557,8 @@ void QLShape::updateActions() {
     }
 }
 
-void QLShape::scaleImage(double factor) {
+void QLShape::scaleImage(double factor)
+{
     Q_ASSERT(imageLabel->pixmap());
     scaleFactor *= factor;
     imageLabel->setVisible(false);
@@ -532,12 +573,14 @@ void QLShape::scaleImage(double factor) {
     zoomOutAct->setEnabled(scaleFactor > 0.333);
 }
 
-void QLShape::adjustScrollBar(QScrollBar *scrollBar, double factor) {
+void QLShape::adjustScrollBar(QScrollBar *scrollBar, double factor)
+{
     scrollBar->setValue(int(factor * scrollBar->value()
                             + ((factor - 1) * scrollBar->pageStep()/2)));
 }
 
-void QLShape::fitSize() {
+void QLShape::fitSize()
+{
     int w = scrollArea->width()<curImage->width() ? scrollArea->width() : curImage->width();
     int h = scrollArea->height()<curImage->height() ? scrollArea->height() : curImage->height();
 
@@ -547,15 +590,20 @@ void QLShape::fitSize() {
     zoomLabel->setText(tr("Zoom: %1%").arg(zoom));
 }
 
-void QLShape::zoomIn() {
-    if (!curImage->isNull() && !fitToWindowAct->isChecked()) scaleImage(1.25);
+void QLShape::zoomIn()
+{
+    if (!curImage->isNull() && !fitToWindowAct->isChecked())
+        scaleImage(1.25);
 }
 
-void QLShape::zoomOut() {
-    if (!curImage->isNull() && !fitToWindowAct->isChecked()) scaleImage(0.8);
+void QLShape::zoomOut()
+{
+    if (!curImage->isNull() && !fitToWindowAct->isChecked())
+        scaleImage(0.8);
 }
 
-void QLShape::normalSize() {
+void QLShape::normalSize()
+{
     imageLabel->setPixmap(QPixmap::fromImage(*curImage));
     imageLabel->adjustSize();
 
@@ -566,13 +614,14 @@ void QLShape::normalSize() {
     zoomOutAct->setEnabled(true);
 }
 
-void QLShape::previousSize() {
+void QLShape::previousSize()
+{
     imageLabel->setPixmap(QPixmap::fromImage(*curImage));
     scaleImage(1.0);
 }
 
-
-void QLShape::fitToWindow() {
+void QLShape::fitToWindow()
+{
     int isFitToWindow = fitToWindowAct->isChecked();
     scrollArea->setWidgetResizable(isFitToWindow);
 
@@ -593,13 +642,16 @@ void QLShape::fitToWindow() {
     updateActions();
 }
 
-void QLShape::resizeEvent(QResizeEvent * event) {
-    if (fitToWindowAct->isChecked() && !curImage->isNull()) fitSize();
+void QLShape::resizeEvent(QResizeEvent * event)
+{
+    if (fitToWindowAct->isChecked() && !curImage->isNull())
+        fitSize();
     event->accept();
 }
 
 /************************ Interface setup *************************/
-void QLShape::createActions() {
+void QLShape::createActions()
+{
     openAct = new QAction(QIcon(":/images/fileopen.png"), tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O", "Open"));
     openAct->setStatusTip(tr("Open an existing file"));
@@ -743,7 +795,8 @@ void QLShape::createActions() {
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
-void QLShape::createMenus() {
+void QLShape::createMenus()
+{
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
@@ -792,7 +845,8 @@ void QLShape::createMenus() {
     helpMenu->addAction(aboutQtAct);
 }
 
-void QLShape::createToolBars() {
+void QLShape::createToolBars()
+{
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);
@@ -811,7 +865,8 @@ void QLShape::createToolBars() {
     viewToolBar->addAction(fitToWindowAct);
 }
 
-void QLShape::createStatusBar() {
+void QLShape::createStatusBar()
+{
     statusBar()->showMessage(tr("Ready"));
     zoomLabel = new QLabel();
     zoomLabel->setText(tr("Zoom: 100%"));
@@ -819,8 +874,9 @@ void QLShape::createStatusBar() {
 }
 
 //Settings
-void QLShape::readSettings() {
-    QSettings settings("darknock", "darknocK");
+void QLShape::readSettings()
+{
+    QSettings settings("darknock", "QLShape");
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     curDirPath = settings.value("dir", QDir::currentPath()).toString();
@@ -828,27 +884,30 @@ void QLShape::readSettings() {
     move(pos);
 }
 
-void QLShape::writeSettings() {
-    QSettings settings("darknock", "darknocK");
+void QLShape::writeSettings()
+{
+    QSettings settings("darknock", "QLShape");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("fitted", fitToWindowAct->isChecked());
     settings.setValue("dir", curDirPath);
 }
 
-void QLShape::showEvent(QShowEvent * event) {
-    QSettings settings("darknock", "darknocK");
+void QLShape::showEvent(QShowEvent * event)
+{
+    QSettings settings("darknock", "QLShape");
     bool fitted = settings.value("fitted", false).toBool();
     fitToWindowAct->setChecked(fitted);
     event->accept();
 }
 
-void QLShape::about() {
+void QLShape::about()
+{
     aboutQLShape->exec();
 }
 
-QLShape::~QLShape() {
+QLShape::~QLShape()
+{
     delete curImage;
     delete history;
 }
-

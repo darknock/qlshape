@@ -25,7 +25,8 @@
 
 using namespace Ui;
 
-class GaussSelector:public QDialog {
+class GaussSelector:public QDialog
+{
     Q_OBJECT
 
 public:

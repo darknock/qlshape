@@ -31,7 +31,8 @@
 
 using namespace darknocksBrain;
 
-std::vector<double>* derivative(const QImage* image, bool blur) {
+std::vector<double>* derivative(const QImage* image, bool blur)
+{
     QImage* blured;
     if(blur) blured = gaussianBlur(image);
     else blured = new QImage(*image);
@@ -39,7 +40,7 @@ std::vector<double>* derivative(const QImage* image, bool blur) {
     int f[] = {
         1, 1, 1,
         0, 0, 0,
-        -1,-1,-1, //S
+       -1,-1,-1, //S
 
         1, 0,-1,
         1, 0,-1,
@@ -56,7 +57,8 @@ std::vector<double>* derivative(const QImage* image, bool blur) {
         E[i] = f[i + tn];
     }
 
-    for (int x = 0; x < image->width(); x++) output->push_back(0);
+    for (int x = 0; x < image->width(); x++)
+        output->push_back(0);
     for (int y = size/2; y < image->height() - size/2; y++) {
         output->push_back(0);
         for (int x = size/2; x < image->width() - size/2; x++) {
@@ -74,7 +76,8 @@ std::vector<double>* derivative(const QImage* image, bool blur) {
         }
         output->push_back(0);
     }
-    for (int x = 0; x < image->width(); x++) output->push_back(0);
+    for (int x = 0; x < image->width(); x++)
+        output->push_back(0);
 
     delete blured;
     delete []S;
@@ -82,7 +85,8 @@ std::vector<double>* derivative(const QImage* image, bool blur) {
     return output;
 }
 
-void normalize(std::vector<double>* temp, double thold) {
+void normalize(std::vector<double>* temp, double thold)
+{
     const double yMin = 0., yMax = 1.;
     double xMin = temp->at(0), xMax = temp->at(0);
     for( unsigned i = 0; i < temp->size(); ++i) {
@@ -98,7 +102,8 @@ void normalize(std::vector<double>* temp, double thold) {
     }
 }
 
-void normalize(std::vector<double>* temp, double thold, double xMin, double xMax) {
+void normalize(std::vector<double>* temp, double thold, double xMin, double xMax)
+{
     const double yMin = 0., yMax = 1.;
     double n =  thold * 0.01 * (xMax - xMin);
     for( unsigned i = 0; i < temp->size(); ++i) {
@@ -109,7 +114,8 @@ void normalize(std::vector<double>* temp, double thold, double xMin, double xMax
     }
 }
 
-QImage* hammingAiEdges(const QImage* image, Hamming* hamming, int thold, bool blur) {
+QImage* hammingAiEdges(const QImage* image, Hamming* hamming, int thold, bool blur)
+{
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int size = 3;
     std::vector<double>* input = derivative(image, blur);
@@ -118,29 +124,36 @@ QImage* hammingAiEdges(const QImage* image, Hamming* hamming, int thold, bool bl
     std::vector<double> temp;
     std::vector<double> reply;
     double response;
-    for (int y = size/2; y < image->height() - size/2; y++)
+    for (int y = size/2; y < image->height() - size/2; y++) {
         for (int x = size/2; x < image->width() - size/2; x++) {
             temp.clear();
-            for (int j = -size/2; j<=size/2; j++)
+            for (int j = -size/2; j<=size/2; j++) {
                 for (int i = -size/2; i <= size/2; i++) {
                     temp.push_back( input->at( (x + i) + image->width() * (y + j) ) );
                 }
+            }
 
             reply = hamming->resolve(temp);
             response = reply.at(0);
-            if( response == 0) newImage->setPixel(x, y, qRgb(255, 255, 255));
-            if( response == 0.5) newImage->setPixel(x, y, qRgb(255, 255, 255));
-            if( response == 1) newImage->setPixel(x, y, qRgb(0, 0, 0));
-            if( response == -1) newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 0)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 0.5)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 1)
+                newImage->setPixel(x, y, qRgb(0, 0, 0));
+            if ( response == -1)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
         }
+    }
 
-    for (int i = 0; i < image->width(); ++i)
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
-        if (i < size/2 || i > image->width() - size/2 - 1)
-            newImage->setPixel(i, j, 0);
-        if (j < size/2 || j > image->height() - size/2 - 1)
-            newImage->setPixel(i, j, 0);
+            if (i < size/2 || i > image->width() - size/2 - 1)
+                newImage->setPixel(i, j, 0);
+            if (j < size/2 || j > image->height() - size/2 - 1)
+                newImage->setPixel(i, j, 0);
         }
+    }
 
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
@@ -148,35 +161,45 @@ QImage* hammingAiEdges(const QImage* image, Hamming* hamming, int thold, bool bl
     return converted;
 }
 
-QImage* previewHammingAiEdges(const QImage* image, std::vector<double>* input, QRect rect, double xMin, double xMax, darknocksBrain::Hamming* hamming, int thold, bool blur) {
+QImage* previewHammingAiEdges(const QImage* image, std::vector<double>* input, QRect rect, double xMin, double xMax, darknocksBrain::Hamming* hamming, int thold, bool blur)
+{
+    Q_UNUSED(blur)
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int size = 3;
     normalize(input, thold, xMin, xMax);
     std::vector<double> temp;
     std::vector<double> reply;
     double response;
-    for (int y = size/2; y < image->height() - size/2; y++)
+    for (int y = size/2; y < image->height() - size/2; y++) {
         for (int x = size/2; x < image->width() - size/2; x++) {
             temp.clear();
-            for (int j = -size/2; j<=size/2; j++)
+            for (int j = -size/2; j<=size/2; j++) {
                 for (int i = -size/2; i <= size/2; i++) {
                         temp.push_back( input->at( (x + i + rect.x()) + rect.width() * (y + j + rect.y()) ) );
                 }
-                reply = hamming->resolve(temp);
-                response = reply.at(0);
-                if( response == 0) newImage->setPixel(x, y, qRgb(255, 255, 255));
-                if( response == 0.5) newImage->setPixel(x, y, qRgb(255, 255, 255));
-                if( response == 1) newImage->setPixel(x, y, qRgb(0, 0, 0));
-                if( response == -1) newImage->setPixel(x, y, qRgb(255, 255, 255));
             }
 
-    for (int i = 0; i < image->width(); ++i)
+            reply = hamming->resolve(temp);
+            response = reply.at(0);
+            if ( response == 0)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 0.5)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 1)
+                newImage->setPixel(x, y, qRgb(0, 0, 0));
+            if ( response == -1)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
+        }
+    }
+
+    for (int i = 0; i < image->width(); ++i) {
         for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
-            }
+        }
+    }
 
     newImage->setAlphaChannel(image->alphaChannel());
     QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
@@ -184,7 +207,10 @@ QImage* previewHammingAiEdges(const QImage* image, std::vector<double>* input, Q
     return converted;
 }
 
-QImage* hammingAiEdges(const QImage* image, std::vector<double>* input, double xMin, double xMax, Hamming* hamming, int thold, bool blur) {
+QImage* hammingAiEdges(const QImage* image, std::vector<double>* input, double xMin, double xMax, Hamming* hamming, int thold, bool blur)
+{
+    Q_UNUSED(blur)
+
     QImage* newImage = new QImage(image->width(), image->height(), image->format());
     int size = 3;
     normalize(input, thold, xMin, xMax);
@@ -192,33 +218,40 @@ QImage* hammingAiEdges(const QImage* image, std::vector<double>* input, double x
     std::vector<double> temp;
     std::vector<double> reply;
     double response;
-    for (int y = size/2; y < image->height() - size/2; y++)
+    for (int y = size/2; y < image->height() - size/2; y++) {
         for (int x = size/2; x < image->width() - size/2; x++) {
-        temp.clear();
-        for (int j = -size/2; j<=size/2; j++)
-            for (int i = -size/2; i <= size/2; i++) {
-            temp.push_back( input->at( (x + i) + image->width() * (y + j) ) );
+            temp.clear();
+            for (int j = -size/2; j<=size/2; j++) {
+                for (int i = -size/2; i <= size/2; i++) {
+                    temp.push_back( input->at( (x + i) + image->width() * (y + j) ) );
+                }
             }
 
             reply = hamming->resolve(temp);
             response = reply.at(0);
-            if( response == 0) newImage->setPixel(x, y, qRgb(255, 255, 255));
-            if( response == 0.5) newImage->setPixel(x, y, qRgb(255, 255, 255));
-            if( response == 1) newImage->setPixel(x, y, qRgb(0, 0, 0));
-            if( response == -1) newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 0)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 0.5)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
+            if ( response == 1)
+                newImage->setPixel(x, y, qRgb(0, 0, 0));
+            if ( response == -1)
+                newImage->setPixel(x, y, qRgb(255, 255, 255));
         }
+    }
 
-        for (int i = 0; i < image->width(); ++i)
-            for (int j = 0; j < image->height(); ++j) {
+    for (int i = 0; i < image->width(); ++i) {
+        for (int j = 0; j < image->height(); ++j) {
             if (i < size/2 || i > image->width() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
             if (j < size/2 || j > image->height() - size/2 - 1)
                 newImage->setPixel(i, j, 0);
-            }
+        }
+    }
 
-            newImage->setAlphaChannel(image->alphaChannel());
-            QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
-            delete newImage;
-            return converted;
+    newImage->setAlphaChannel(image->alphaChannel());
+    QImage *converted = new QImage(newImage->convertToFormat(QImage::Format_ARGB32));
+    delete newImage;
+    return converted;
 }
 

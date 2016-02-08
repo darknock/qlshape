@@ -56,9 +56,10 @@ void EdgeSelector::updateEdge()
 
 void EdgeSelector::checkChange()
 {
-    if (ui.checkBox->checkState() != Qt::Checked) {
+    if (ui.checkBox->checkState() != Qt::Checked)
         ui.previewLabel->refresh();
-    } else updateEdge();
+    else
+        updateEdge();
 }
 
 void EdgeSelector::setPreview(QImage* prev)

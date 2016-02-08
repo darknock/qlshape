@@ -25,7 +25,8 @@
 
 using namespace Ui;
 
-class CannySelector:public QDialog {
+class CannySelector : public QDialog
+{
     Q_OBJECT
 
 public:
